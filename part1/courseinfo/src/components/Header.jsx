@@ -1,7 +1,7 @@
-function Header(params) {
+function Header({ name }) {
   return (
     <header>
-      <h1>{params.course}</h1>
+      <h1>{name}</h1>
     </header>
   );
 }
