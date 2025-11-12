@@ -27,7 +27,16 @@ const App = () => {
       }}>vote</button>
       <button onClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))}>next anecdote</button>
       <p>has {votesCount[selected]} votes</p>
-      {console.log(votesCount)}
+
+
+      <h1>Anecdote with most votes</h1>
+      {votesCount.every(vote => vote === 0) ? <p>No votes yet</p> : 
+      <div>
+        <p>{anecdotes[votesCount.indexOf(Math.max(...votesCount))]}</p>
+        <p>has {Math.max(...votesCount)} votes</p>
+      </div>
+      }
+      
     </div>
   )
 }
