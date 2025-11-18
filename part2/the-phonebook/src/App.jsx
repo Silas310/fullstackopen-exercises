@@ -31,17 +31,18 @@ const App = () => {
     event.preventDefault();
     const person = {
       name: newName,
-      number: newNumber,
-      id: persons.length + 1
+      number: newNumber
     };
    if (newName.trim() === '') {
       alert('Name cannot be empty!');
       return; // Para a execução da função
     }
     if (!persons.some(person => person.name === newName)){
-      setPersons(persons.concat(person));
-      setNewName('');
-      setNewNumber('');
+      axios.post('http://localhost:3001/persons', person).then(response => {
+        setPersons(persons.concat(response.data));
+        setNewName('');
+        setNewNumber('');
+      });
     } else {
       alert(`${newName} is already added to phonebook`);
     }
