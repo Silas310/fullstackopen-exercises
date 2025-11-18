@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import SearchFilter from './components/SearchFilter';
 import Form from './components/Form';
 import Persons from './components/Persons';
-import axios from 'axios';
+import personService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -11,7 +11,7 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
+    personService.getPersons()
     .then(reponse => {
       setPersons(reponse.data);
     })
@@ -38,7 +38,7 @@ const App = () => {
       return; // Para a execução da função
     }
     if (!persons.some(person => person.name === newName)){
-      axios.post('http://localhost:3001/persons', person).then(response => {
+      personService.createPerson(person).then(response => {
         setPersons(persons.concat(response.data));
         setNewName('');
         setNewNumber('');
