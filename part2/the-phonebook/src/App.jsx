@@ -48,6 +48,12 @@ const App = () => {
     }
   }
 
+  const deletePerson = (id) => {
+    personService.deletePerson(id).then(() => {
+      setPersons(persons.filter(p => p.id !== id));
+    })    
+  }
+
   const personsToShow = persons.filter(person => person.name.toLowerCase().startsWith(filter.toLowerCase()));
 
   return (
@@ -63,7 +69,7 @@ const App = () => {
       />
       <h2>Numbers</h2>
      
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
     
   )
