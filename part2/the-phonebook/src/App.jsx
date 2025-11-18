@@ -33,20 +33,42 @@ const App = () => {
       name: newName,
       number: newNumber
     };
+    const existingPerson = persons.find(person => person.name === newName);
+
    if (newName.trim() === '') {
       alert('Name cannot be empty!');
-      return; // Para a execução da função
+      return; 
     }
-    if (!persons.some(person => person.name === newName)){
+    
+    if (!existingPerson) {
       personService.createPerson(person).then(response => {
         setPersons(persons.concat(response.data));
         setNewName('');
         setNewNumber('');
       });
     } else {
-      alert(`${newName} is already added to phonebook`);
+        const updatedPerson = { ...existingPerson, number: newNumber };
+
+        const replace = window.confirm(
+          `${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
+        );
+
+        if (replace) {
+          personService
+          .updatePerson(existingPerson.id, updatedPerson)
+          .then(response => {
+            setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data));
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch( () => {
+            alert(`Information of ${existingPerson.name} has already been removed from server`);
+              setPersons(persons.filter(p => p.id !== existingPerson.id));
+          });
+        }
+      }
     }
-  }
+  
 
   const deletePerson = (id) => {
     personService.deletePerson(id).then(() => {
