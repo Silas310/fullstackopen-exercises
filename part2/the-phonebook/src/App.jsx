@@ -10,7 +10,14 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
-  const [message, setMessage] = useState(null);
+  const [notification, setNotification] = useState({message: null, isSuccess: true});
+
+  const showNotification = (message, isSuccess) => {
+    setNotification({message, isSuccess});
+    setTimeout(() => {
+      setNotification({message: null, isSuccess: true});
+    }, 5000);
+  }
 
   useEffect(() => {
     personService.getPersons()
@@ -45,10 +52,7 @@ const App = () => {
     if (!existingPerson) {
       personService.createPerson(person).then(response => {
         setPersons(persons.concat(response.data));
-        setMessage(`Added ${newName}`);
-        setTimeout(() => {
-          setMessage(null);
-        }, 5000);
+        showNotification(`Added ${newName}`, true);
         setNewName('');
         setNewNumber('');
         
@@ -65,26 +69,27 @@ const App = () => {
           .updatePerson(existingPerson.id, updatedPerson)
           .then(response => {
             setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data));
-            setMessage(`Updated ${existingPerson.name}'s number`);
-            setTimeout(() => {
-              setMessage(null);
-            }, 5000);
+            showNotification(`Updated ${existingPerson.name}'s number`, true);
             setNewName('');
             setNewNumber('');
           })
           .catch( () => {
-            alert(`Information of ${existingPerson.name} has already been removed from server`);
-              setPersons(persons.filter(p => p.id !== existingPerson.id));
+            showNotification(`Information of ${existingPerson.name} has already been removed from server.`, false);
+            setPersons(persons.filter(p => p.id !== existingPerson.id));
           });
         }
       }
     }
   
 
-  const deletePerson = (id) => {
+  const deletePerson = ({id, name}) => {
     personService.deletePerson(id).then(() => {
       setPersons(persons.filter(p => p.id !== id));
-    })    
+      showNotification(`Deleted ${name}`, true);
+    }).catch( () => {
+      showNotification(`Info of ${name} already been removed from the server.`, false);
+      setPersons(persons.filter(p => p.id !== id));
+    });    
   }
 
   const personsToShow = persons.filter(person => person.name.toLowerCase().startsWith(filter.toLowerCase()));
@@ -92,7 +97,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {message !== null && <OpNotification message={message} />}
+      {notification.message !== null && <OpNotification message={notification.message} isSuccess={notification.isSuccess} />}
       <SearchFilter filter={filter} handleFilterChange={handleFilterChange} />
       <Form
         newName={newName} 

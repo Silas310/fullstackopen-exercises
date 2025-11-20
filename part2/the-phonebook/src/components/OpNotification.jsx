@@ -1,10 +1,10 @@
-const OpNotification = ( {message} ) => {
+const OpNotification = ( {message, isSuccess} ) => {
   if (message === null) {
     return null
   }
 
   return (
-    <div style={{color: 'green', border: '2px solid green'}}>
+    <div style={{color: isSuccess ? 'green' : 'red', border: `2px solid ${isSuccess ? 'green' : 'red'}`}}>
       <p>{message}</p>
     </div>
   )
