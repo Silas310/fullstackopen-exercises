@@ -3,12 +3,14 @@ import SearchFilter from './components/SearchFilter';
 import Form from './components/Form';
 import Persons from './components/Persons';
 import personService from './services/persons';
+import OpNotification from './components/OpNotification';
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getPersons()
@@ -43,8 +45,13 @@ const App = () => {
     if (!existingPerson) {
       personService.createPerson(person).then(response => {
         setPersons(persons.concat(response.data));
+        setMessage(`Added ${newName}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
         setNewName('');
         setNewNumber('');
+        
       });
     } else {
         const updatedPerson = { ...existingPerson, number: newNumber };
@@ -58,6 +65,10 @@ const App = () => {
           .updatePerson(existingPerson.id, updatedPerson)
           .then(response => {
             setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data));
+            setMessage(`Updated ${existingPerson.name}'s number`);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
             setNewName('');
             setNewNumber('');
           })
@@ -81,6 +92,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {message !== null && <OpNotification message={message} />}
       <SearchFilter filter={filter} handleFilterChange={handleFilterChange} />
       <Form
         newName={newName} 
