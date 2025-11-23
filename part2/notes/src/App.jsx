@@ -5,7 +5,7 @@ import noteService from './services/notes'
 import Footer from './components/Footer'
 
 const App = () => {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState(null)
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -53,6 +53,9 @@ const App = () => {
     setNewNote(event.target.value)
   }
 
+  if (!notes) { 
+    return null 
+  }
   const notesToShow = showAll ? notes : notes.filter((note) => note.important)
 
   return (
