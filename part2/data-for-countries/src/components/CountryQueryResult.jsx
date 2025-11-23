@@ -1,4 +1,4 @@
-const CountryQueryResult = ({ countryData, showCountryInfo }) => {
+const CountryQueryResult = ({ countryData, showCountryInfo, weatherData }) => {
   const countryCount = countryData.length;
   if (countryCount > 10) {
     return <p>Too many matches, specify another filter</p>;
@@ -28,6 +28,10 @@ const CountryQueryResult = ({ countryData, showCountryInfo }) => {
         )}
       </ul>
       <img src={country.flags.png} alt={`Flag of ${country.name.common}`} width="250" />
+
+      <h2>Weather in {country.capital[0]}</h2>
+      <p>temperature {weatherData?.main?.temp} °C</p>
+      <p>wind {weatherData?.wind?.speed} m/s</p>
     </div>);
   }
 
