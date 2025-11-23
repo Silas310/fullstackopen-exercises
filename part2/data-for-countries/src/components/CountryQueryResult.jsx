@@ -1,4 +1,4 @@
-const CountryQueryResult = ({ countryData }) => {
+const CountryQueryResult = ({ countryData, showCountryInfo }) => {
   const countryCount = countryData.length;
   if (countryCount > 10) {
     return <p>Too many matches, specify another filter</p>;
@@ -6,7 +6,10 @@ const CountryQueryResult = ({ countryData }) => {
   if (countryCount > 1 && countryCount <= 10) {
     return (<ul>
       {countryData.map(country => 
-        <li key={country.cca3}>{country.name.common}</li>
+        <div key={country.cca3}>
+          <li >{country.name.common}</li>
+          <button  onClick={() => showCountryInfo(country)}>Show</button>
+        </div>
       )}
     </ul>
     );

@@ -31,11 +31,15 @@ function App() {
     return () => clearTimeout(timeoutId); // cleanup to avoid multiple timeouts
   }, [queryFilter, allCountryData]);
 
+  const showCountryInfo = (country) => {
+    setFilteredCountries([country]);
+  }
+
   return (
     <div>
       <p>find countries <input type="text" value={queryFilter} 
       onChange={handleFilterChange}/></p>
-      <CountryQueryResult countryData={filteredCountries} />
+      <CountryQueryResult countryData={filteredCountries} showCountryInfo={showCountryInfo} />
     </div>
   )
 }
