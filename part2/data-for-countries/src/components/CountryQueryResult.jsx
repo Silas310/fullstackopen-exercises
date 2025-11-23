@@ -31,6 +31,7 @@ const CountryQueryResult = ({ countryData, showCountryInfo, weatherData }) => {
 
       <h2>Weather in {country.capital[0]}</h2>
       <p>temperature {weatherData?.main?.temp} °C</p>
+      <img src={`http://openweathermap.org/img/wn/${weatherData?.weather[0]?.icon}@2x.png`} alt="Weather icon" />
       <p>wind {weatherData?.wind?.speed} m/s</p>
     </div>);
   }
