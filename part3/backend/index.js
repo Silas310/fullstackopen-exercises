@@ -1,5 +1,5 @@
-const { log } = require('console')
-const http = require('http')
+const express = require('express')
+const app = express()
 
 let notes = [
   {
@@ -18,9 +18,31 @@ let notes = [
     important: true
   }
 ]
-const app = http.createServer((request, response) => {
-  response.writeHead(200, { 'Content-Type': 'application/json' })
-  response.end(JSON.stringify(notes))
+
+app.get('/', (request, response) => { // root endpoint
+  response.send('<h1>Hello World!</h1>')
+})
+
+app.get('/api/notes', (request, response) => { // all notes endpoint
+  response.json(notes)
+})
+""
+app.get('/api/notes/:id', (request, response) => { // single note endpoint
+  const id = request.params.id
+  const note = notes.find(note => note.id === id)
+
+  if (note) {
+    response.json(note)
+  } else {
+    response.status(404).end()
+  }
+})
+
+app.delete('/api/notes/:id', (request, response) => { // delete note endpoint
+  const id = request.params.id
+  notes = notes.filter(note => note.id !== id)
+
+  response.status(204).end()
 })
 
 const PORT = 3001
