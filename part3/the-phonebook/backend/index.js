@@ -26,15 +26,25 @@ const numbers = [
     }
 ]
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res) => { // Endpoint to get all phonebook entries
   res.json(numbers);
 });
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res) => { // Endpoint to get phonebook info
   const info = `<p>Phonebook has info for ${numbers.length} people</p><p>${new Date()}</p>`;
   res.send(info);
 });
 
-app.listen(PORT, () => {
+app.get('/api/persons/:id', (req, res) =>{ // Endpoint to get a specific phonebook entry by ID
+  const id = req.params.id;
+  const person = numbers.find(p => p.id === id);
+  if (person) {
+    res.json(person);
+  } else {
+    res.status(404).end();
+  }
+})
+
+app.listen(PORT, () => { // Start the server
   console.log(`Server running on port ${PORT}`);
 });
