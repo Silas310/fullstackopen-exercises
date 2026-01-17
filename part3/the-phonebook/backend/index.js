@@ -1,8 +1,10 @@
 import express from 'express';
+import morgan from 'morgan';
 const app = express();
 const PORT = 3001;
 
 app.use(express.json()); // Middleware to parse JSON request bodies
+app.use(morgan('tiny')); // Middleware for logging HTTP requests
 
 let numbers = [
     { 
