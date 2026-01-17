@@ -2,6 +2,7 @@ import express from 'express';
 const app = express();
 const PORT = 3001;
 
+app.use(express.json()); // Middleware to parse JSON request bodies
 
 let numbers = [
     { 
@@ -49,6 +50,16 @@ app.delete('/api/persons/:id', (req, res) => { // Endpoint to delete a specific 
   const id = req.params.id;
   numbers = numbers.filter(p => p.id !== id);
   res.status(204).end();
+});
+
+app.post('/api/persons', (req, res) => { // Endpoint to add a new phonebook entry
+  const newPerson = {
+    id: Math.floor(Math.random() * 1000).toString(),
+    name: req.body.name,
+    number: req.body.number
+  }
+  numbers = numbers.concat(newPerson);
+  res.json(newPerson);
 });
 
 app.listen(PORT, () => { // Start the server
