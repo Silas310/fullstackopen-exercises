@@ -3,7 +3,7 @@ const app = express();
 const PORT = 3001;
 
 
-const numbers = [
+let numbers = [
     { 
       "id": "1",
       "name": "Arto Hellas", 
@@ -43,7 +43,13 @@ app.get('/api/persons/:id', (req, res) =>{ // Endpoint to get a specific phonebo
   } else {
     res.status(404).end();
   }
-})
+});
+
+app.delete('/api/persons/:id', (req, res) => { // Endpoint to delete a specific phonebook entry by ID
+  const id = req.params.id;
+  numbers = numbers.filter(p => p.id !== id);
+  res.status(204).end();
+});
 
 app.listen(PORT, () => { // Start the server
   console.log(`Server running on port ${PORT}`);
