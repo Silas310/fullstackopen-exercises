@@ -1,7 +1,10 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
+app.use(cors());
 app.use(express.json())
+
 
 let notes = [
   {
@@ -75,6 +78,7 @@ app.post('/api/notes', (request, response) => { // create note endpoint
   response.json(note)
 })
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
