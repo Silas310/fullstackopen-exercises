@@ -1,12 +1,13 @@
 import express from 'express';
 import morgan from 'morgan';
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 app.use(morgan('tiny')); // Middleware for logging HTTP requests
 morgan.token('body', (req, res) => JSON.stringify(req.body)); // Custom token to log request body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body')); // Use custom format including body
+
 let numbers = [
     { 
       "id": "1",
