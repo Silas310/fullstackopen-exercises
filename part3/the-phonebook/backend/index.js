@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 app.use(morgan('tiny')); // Middleware for logging HTTP requests
+app.use(express.static('dist')); // Serve static files from the 'dist' directory
 morgan.token('body', (req, res) => JSON.stringify(req.body)); // Custom token to log request body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body')); // Use custom format including body
 
