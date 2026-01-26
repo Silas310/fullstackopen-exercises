@@ -16,34 +16,35 @@ const personSchema = new mongoose.Schema({
   number: String,
 });
 
-const Person = mongoose.model('Person', personSchema);
+export const Person = mongoose.model('Person', personSchema);
 
-if (process.argv.length === 3) {
-  console.log('phonebook:');
-  Person.find({}).then(result => {
-    result.forEach(person => {
-      console.log(`${person.name} ${person.number}`);
-    });
-    mongoose.connection.close();
-  });
 
-} else if (process.argv.length === 5) {
-  const name = process.argv[3];
-  const number = process.argv[4];
-
-  const person = new Person({
-    name: name,
-    number: number,
-  });
-
-  person.save().then(() => {
-    console.log(`added ${name} number ${number} to phonebook`);
-    mongoose.connection.close();
-  });
-
-} else {
-  console.log('Please provide the correct arguments:');
-  console.log('To list: node mongo.js <password>');
-  console.log('To add:  node mongo.js <password> <name> <number>');
-  mongoose.connection.close();
-}
+// if (process.argv.length === 3) {
+//   console.log('phonebook:');
+//   Person.find({}).then(result => {
+//     result.forEach(person => {
+//       console.log(`${person.name} ${person.number}`);
+//     });
+//     mongoose.connection.close();
+//   });
+  
+// } else if (process.argv.length === 5) {
+//   const name = process.argv[3];
+//   const number = process.argv[4];
+  
+//   const person = new Person({
+//     name: name,
+//     number: number,
+//   });
+  
+//   person.save().then(() => {
+//     console.log(`added ${name} number ${number} to phonebook`);
+//     mongoose.connection.close();
+//   });
+  
+// } else {
+//   console.log('Please provide the correct arguments:');
+//   console.log('To list: node mongo.js <password>');
+//   console.log('To add:  node mongo.js <password> <name> <number>');
+//   mongoose.connection.close();
+// }
