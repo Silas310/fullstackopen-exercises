@@ -44,32 +44,15 @@ app.delete('/api/persons/:id', (req, res) => { // Endpoint to delete a specific 
 });
 
 app.post('/api/persons', (req, res) => { // Endpoint to add a new phonebook entry
-  // const body = req.body; // get the request body to verify the data before creating a new object
+  const body = req.body;
+  const newPerson = new Person({
+    name: body.name,
+    number: body.number
+  });
 
-
-  // if (!body.name) {
-  //   return res.status(400).json({ error: 'Name is missing' });
-  // }
-  // if (!body.number) {
-  //   return res.status(400).json({ error: 'Number is missing' });
-  // }
-
-  // const nameExists = numbers.find(p => p.name === body.name);
-
-  // if (nameExists) {
-  //   return res.status(400).json({ error: 'Name must be unique' });
-  // }
-
-
-  // const newPerson = {
-  //   id: (Math.floor(Math.random() * 10000)).toString(),
-  //   name: body.name,
-  //   number: body.number
-  // };
-
-
-  // numbers = numbers.concat(newPerson);
-  // res.json(newPerson);
+  newPerson.save().then(savedPerson => {
+    res.json(savedPerson);
+  })
 });
 
 app.listen(PORT, () => { // Start the server
