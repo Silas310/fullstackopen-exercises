@@ -1,29 +1,30 @@
+require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const app = express();
+const Note = require('./models/note');
 
-app.use(cors());
+
 app.use(express.json());
 app.use(express.static('dist'));
 
 
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false
-  },
-  {
-    id: "3",
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true
-  }
-]
+// let notes = [
+//   {
+//     id: "1",
+//     content: "HTML is easy",
+//     important: true
+//   },
+//   {
+//     id: "2",
+//     content: "Browser can execute only JavaScript",
+//     important: false
+//   },
+//   {
+//     id: "3",
+//     content: "GET and POST are the most important methods of HTTP protocol",
+//     important: true
+//   }
+// ]
 
 const generateId = () => {
   const maxId = notes.length > 0
@@ -37,18 +38,15 @@ app.get('/', (request, response) => { // root endpoint
 })
 
 app.get('/api/notes', (request, response) => { // all notes endpoint
-  response.json(notes)
+  Note.find({}).then(notes => {
+    response.json(notes)
+  })
 })
-""
-app.get('/api/notes/:id', (request, response) => { // single note endpoint
-  const id = request.params.id
-  const note = notes.find(note => note.id === id)
 
-  if (note) {
+app.get('/api/notes/:id', (request, response) => { // single note endpoint
+  Note.findById(request.params.id).then(note => { // use mongoose model to find note by ID
     response.json(note)
-  } else {
-    response.status(404).end()
-  }
+  })
 })
 
 app.delete('/api/notes/:id', (request, response) => { // delete note endpoint
@@ -59,27 +57,23 @@ app.delete('/api/notes/:id', (request, response) => { // delete note endpoint
 })
 
 app.post('/api/notes', (request, response) => { // create note endpoint
-  
   const body = request.body
 
   if (!body.content) {
-    return response.status(400).json({
-      error: 'content missing'
-    })
+    return response.status(400).json({ error: 'content missing' })
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-    id: generateId()
-  }
+  })
 
-  notes = notes.concat(note)
-
-  response.json(note)
+  note.save().then(savedNote => {
+    response.json(savedNote)
+  })
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
