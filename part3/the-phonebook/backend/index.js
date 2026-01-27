@@ -13,6 +13,7 @@ app.use(express.static('dist')); // Serve static files from the 'dist' directory
 morgan.token('body', (req, res) => JSON.stringify(req.body)); // Custom token to log request body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body')); // Use custom format including body
 
+
 app.get('/api/persons', (req, res) => { // Endpoint to get all phonebook entries
   Person.find().then(persons => {
     res.json(persons);
@@ -27,31 +28,31 @@ app.get('/info', (req, res) => { // Endpoint to get phonebook info
   });
 });
 
-app.get('/api/persons/:id', (req, res) =>{ // Endpoint to get a specific phonebook entry by ID
-  const id = Person.findById(req.params.id).then(person => {
+app.get('/api/persons/:id', (req, res, next) =>{ // Endpoint to get a specific phonebook entry by ID
+  const id = Person.findById(req.params.id)
+  .then(person => {
     if (person) {
       res.json(person);
     } else {
       res.status(404).end();
     }
-  });
+  })
+  .catch(error => next(error));
 });
 
-app.delete('/api/persons/:id', (req, res) => { // delete a specific phonebook entry by ID
-  Person.findByIdAndDelete(req.params.id).then( result => {
+app.delete('/api/persons/:id', (req, res, next) => { // delete a specific phonebook entry by ID
+  Person.findByIdAndDelete(req.params.id)
+  .then( result => {
     if(result) {
       res.status(204).end();
     } else {
       res.status(404).end();
     }
   })
-  .catch(error => {
-    console.log(error);
-    res.status(400).send({ error: 'malformatted id' });
-  });
+  .catch(error => next(error));
 });
 
-app.post('/api/persons', (req, res) => { // Endpoint to add a new phonebook entry
+app.post('/api/persons', (req, res, next) => { // Endpoint to add a new phonebook entry
   const body = req.body;
   const newPerson = new Person({
     name: body.name,
@@ -61,7 +62,25 @@ app.post('/api/persons', (req, res) => { // Endpoint to add a new phonebook entr
   newPerson.save().then(savedPerson => {
     res.json(savedPerson);
   })
+  .catch(error => next(error));
 });
+
+
+const errorHandler = (error, req, res, next) => { // Error handling middleware
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' });
+  }
+
+  if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler); // Use the error handling middleware
 
 app.listen(PORT, () => { // Start the server
   console.log(`Server running on port ${PORT}`);
