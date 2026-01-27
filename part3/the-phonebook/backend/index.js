@@ -37,10 +37,18 @@ app.get('/api/persons/:id', (req, res) =>{ // Endpoint to get a specific phonebo
   });
 });
 
-app.delete('/api/persons/:id', (req, res) => { // Endpoint to delete a specific phonebook entry by ID
-  const id = req.params.id;
-  // numbers = numbers.filter(p => p.id !== id);
-  res.status(204).end();
+app.delete('/api/persons/:id', (req, res) => { // delete a specific phonebook entry by ID
+  Person.findByIdAndDelete(req.params.id).then( result => {
+    if(result) {
+      res.status(204).end();
+    } else {
+      res.status(404).end();
+    }
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(400).send({ error: 'malformatted id' });
+  });
 });
 
 app.post('/api/persons', (req, res) => { // Endpoint to add a new phonebook entry
