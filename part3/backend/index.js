@@ -29,7 +29,7 @@ app.get('/api/notes/:id', (request, response, next) => { // single note endpoint
 })
 
 app.delete('/api/notes/:id', (request, response, next) => { // delete note endpoint
-  Note.findByIdAndRemove(request.params.id)
+  Note.findByIdAndDelete(request.params.id)
   .then(() => {
     response.status(204).end()
   })
