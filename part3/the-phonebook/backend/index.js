@@ -14,13 +14,13 @@ morgan.token('body', (req, res) => JSON.stringify(req.body)); // Custom token to
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body')); // Use custom format including body
 
 
-app.get('/api/persons', (req, res) => { // Endpoint to get all phonebook entries
+app.get('/api/persons', (req, res) => { // get all phonebook entries
   Person.find().then(persons => {
     res.json(persons);
   });
 });
 
-app.get('/info', (req, res) => { // Endpoint to get phonebook info
+app.get('/info', (req, res) => { // get phonebook info
   const info = Person.countDocuments({}).then(count => {
     return `Phonebook has info for ${count} people<br><br>${new Date()}`;
   }).then(info => {
@@ -28,11 +28,29 @@ app.get('/info', (req, res) => { // Endpoint to get phonebook info
   });
 });
 
-app.get('/api/persons/:id', (req, res, next) =>{ // Endpoint to get a specific phonebook entry by ID
+app.get('/api/persons/:id', (req, res, next) =>{ // get a specific phonebook entry by ID
   const id = Person.findById(req.params.id)
   .then(person => {
     if (person) {
       res.json(person);
+    } else {
+      res.status(404).end();
+    }
+  })
+  .catch(error => next(error));
+});
+
+app.put('/api/persons/:id', (req, res, next) => { // update specific id
+  const body = req.body; // Endpoint to update a specific phonebook entry by ID
+  const person = {
+    name: body.name,
+    number: body.number
+  };
+
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  .then(updatedPerson => {
+    if (updatedPerson) {
+      res.json(updatedPerson);
     } else {
       res.status(404).end();
     }
@@ -52,7 +70,7 @@ app.delete('/api/persons/:id', (req, res, next) => { // delete a specific phoneb
   .catch(error => next(error));
 });
 
-app.post('/api/persons', (req, res, next) => { // Endpoint to add a new phonebook entry
+app.post('/api/persons', (req, res, next) => { // add a new phonebook entry
   const body = req.body;
   const newPerson = new Person({
     name: body.name,
@@ -64,7 +82,6 @@ app.post('/api/persons', (req, res, next) => { // Endpoint to add a new phoneboo
   })
   .catch(error => next(error));
 });
-
 
 const errorHandler = (error, req, res, next) => { // Error handling middleware
   console.error(error.message);
