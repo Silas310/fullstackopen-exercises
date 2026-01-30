@@ -25,7 +25,8 @@ app.get('/info', (req, res) => { // get phonebook info
     return `Phonebook has info for ${count} people<br><br>${new Date()}`;
   }).then(info => {
     res.send(info);
-  });
+  })
+  .catch(error => {next(error)});
 });
 
 app.get('/api/persons/:id', (req, res, next) =>{ // get a specific phonebook entry by ID
