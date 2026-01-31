@@ -50,12 +50,15 @@ const App = () => {
     }
     
     if (!existingPerson) {
-      personService.createPerson(person).then(response => {
+      personService.createPerson(person)
+      .then(response => {
         setPersons(persons.concat(response.data));
         showNotification(`Added ${newName}`, true);
         setNewName('');
         setNewNumber('');
-        
+      })
+      .catch(error => {
+        showNotification(error.response.data.error, false);
       });
     } else {
         const updatedPerson = { ...existingPerson, number: newNumber };
