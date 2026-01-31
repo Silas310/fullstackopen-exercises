@@ -6,10 +6,21 @@ if (process.argv.length < 3) {
 }
 
 const password = process.argv[2];
-const url = `mongodb+srv://silascosta310_db_user:${password}@cluster0.izehgm9.mongodb.net/phonebookApp?retryWrites=true&w=majority&appName=Cluster0`;
+const url = process.env.MONGODB_URI;
+
+if(!url) {
+  console.log('MONGODB_URI not defined in environment variables');
+  process.exit(1);
+}
 
 mongoose.set('strictQuery', false);
-mongoose.connect(url, { family: 4 });
+mongoose.connect(url, { family: 4 })
+  .then(() => {
+    console.log('connected to MongoDB');
+  })
+  .catch((error) => {
+    console.log('error connecting to MongoDB:', error.message);
+  });
 
 const personSchema = new mongoose.Schema({
   name: {
