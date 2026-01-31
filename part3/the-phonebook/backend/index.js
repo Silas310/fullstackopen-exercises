@@ -1,9 +1,10 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { Person } from './mongo.js';
 import express from 'express';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT
 

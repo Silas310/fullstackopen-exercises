@@ -1,11 +1,5 @@
 import mongoose from 'mongoose';
 
-if (process.argv.length < 3) {
-  console.log('give password as argument')
-  process.exit(1)
-}
-
-const password = process.argv[2];
 const url = process.env.MONGODB_URI;
 
 if(!url) {
@@ -50,34 +44,3 @@ personSchema.set('toJSON', {
 });
 
 export const Person = mongoose.model('Person', personSchema);
-
-
-// if (process.argv.length === 3) {
-//   console.log('phonebook:');
-//   Person.find({}).then(result => {
-//     result.forEach(person => {
-//       console.log(`${person.name} ${person.number}`);
-//     });
-//     mongoose.connection.close();
-//   });
-  
-// } else if (process.argv.length === 5) {
-//   const name = process.argv[3];
-//   const number = process.argv[4];
-  
-//   const person = new Person({
-//     name: name,
-//     number: number,
-//   });
-  
-//   person.save().then(() => {
-//     console.log(`added ${name} number ${number} to phonebook`);
-//     mongoose.connection.close();
-//   });
-  
-// } else {
-//   console.log('Please provide the correct arguments:');
-//   console.log('To list: node mongo.js <password>');
-//   console.log('To add:  node mongo.js <password> <name> <number>');
-//   mongoose.connection.close();
-// }
