@@ -1,10 +1,10 @@
-require('dotenv').config();
-const express = require('express');
-const app = express();
-const Note = require('./models/note');
+require('dotenv').config()
+const express = require('express')
+const app = express()
+const Note = require('./models/note')
 
-app.use(express.static('dist'));
-app.use(express.json());
+app.use(express.static('dist'))
+app.use(express.json())
 
 
 app.get('/', (request, response) => { // root endpoint
@@ -25,15 +25,15 @@ app.get('/api/notes/:id', (request, response, next) => { // single note endpoint
       response.status(404).end()
     }
   })
-  .catch(error => next(error)) // pass error to error handling middleware
+    .catch(error => next(error)) // pass error to error handling middleware
 })
 
 app.delete('/api/notes/:id', (request, response, next) => { // delete note endpoint
   Note.findByIdAndDelete(request.params.id)
-  .then(() => {
-    response.status(204).end()
-  })
-  .catch(error => next(error)) // pass error to error handling middleware
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error)) // pass error to error handling middleware
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
@@ -71,7 +71,7 @@ app.post('/api/notes', (request, response, next) => {
     .catch(error => next(error))
 })
 
-const errorHandler = (error, request, response, next) => {  // error handling middleware. Should be the last loaded middleware. 
+const errorHandler = (error, request, response, next) => {  // error handling middleware. Should be the last loaded middleware.
   console.error(error.message)
 
   if (error.name === 'CastError') {
@@ -79,9 +79,9 @@ const errorHandler = (error, request, response, next) => {  // error handling mi
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
-  next(error);
+  next(error)
 }
-app.use(errorHandler);
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
