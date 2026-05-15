@@ -65,9 +65,46 @@ const mostBlogs = (blogs) => {
 };
 
 
+const mostLikes = (blogs) => {
+  if (!blogs || blogs.length === 0) {
+    return null;
+  }
+
+  const blogsMap = {}; // {name, count}
+
+  // insert and count blogs
+  blogs.forEach(element => {
+    // author not in map
+    if (!blogsMap[element.author]) {
+      blogsMap[element.author] = {
+        name: element.author,
+        likes: element.likes
+      }
+    } else {
+      blogsMap[element.author].likes += element.likes;
+    }
+  });
+
+  // find in map the author with most likes
+  let maxLikes = 0;
+  let winnerAuthorName = "";
+  for (const author in blogsMap) {
+    if (blogsMap[author].likes > maxLikes) {
+      maxLikes = blogsMap[author].likes;
+      winnerAuthorName = author;
+    }
+  }
+
+  return {
+    name: winnerAuthorName,
+    likes: maxLikes
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
