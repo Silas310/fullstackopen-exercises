@@ -101,3 +101,11 @@ describe('favorite blog', () => {
     });
   });
 });
+
+test('most blogs', () => {
+  const result = listHelper.mostBlogs(blogs);
+  assert.deepStrictEqual(result, {
+    name: "Robert C. Martin",
+    count: 3
+  });
+});
