@@ -31,7 +31,7 @@ test('_id is actually id', async () => {
 });
 
 test('successful blog creation', async () => {
-  const newBlog = {
+  const newBlog ={
     title: "Test Blog",
     author: "Silas",
     url: "https://test.com",
@@ -51,6 +51,23 @@ test('successful blog creation', async () => {
   // new blog inserted
   const titles = blogsAtEnd.map(b => b.title);
   assert.ok(titles.includes('Test Blog'));
+});
+
+test('if likes property is missing, it defaults to 0', async () => {
+  const newBlog = {
+    title: "Test Blog Without Likes",
+    author: "Silas",
+    url: "https://test.com",
+  };
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  console.log('response body: ', response.body);
+  assert.strictEqual(response.body.likes, 0);
 });
 
 
