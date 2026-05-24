@@ -26,10 +26,31 @@ test('_id is actually id', async () => {
   const response = await api
     .get('/api/blogs');
 
-  console.log(response.body);
-  
   assert.ok(response.body[0].id);
   assert.strictEqual(response.body[0]._id, undefined);
+});
+
+test('successful blog creation', async () => {
+  const newBlog = {
+    title: "Test Blog",
+    author: "Silas",
+    url: "https://test.com",
+    likes: 5
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  // same size after adding a new blog
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
+
+  // new blog inserted
+  const titles = blogsAtEnd.map(b => b.title);
+  assert.ok(titles.includes('Test Blog'));
 });
 
 
