@@ -22,6 +22,17 @@ test('all blogs are returned as json and amount is equal', async () => {
   assert.strictEqual(response.body.length, helper.initialBlogs.length);
 });
 
+test('_id is actually id', async () => {
+  const response = await api
+    .get('/api/blogs');
+
+  console.log(response.body);
+  
+  assert.ok(response.body[0].id);
+  assert.strictEqual(response.body[0]._id, undefined);
+});
+
+
 after(async () => {
   await mongoose.connection.close();
 });
