@@ -1,13 +1,15 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blogSchema');
 
-const getAll = (request, response) => {
-  Blog.find({}).then(blogs => response.json(blogs));
+const getAll = async (request, response) => {
+  const blogs = await Blog.find({});
+  response.json(blogs);
 };
 
-const create = (request, response) => {
+const create = async (request, response) => {
   const blog = new Blog(request.body);
-  blog.save().then(result => response.status(201).json(result));
+  const result = await blog.save();
+  response.status(201).json(result);
 };
 
 blogsRouter.get('/', getAll);

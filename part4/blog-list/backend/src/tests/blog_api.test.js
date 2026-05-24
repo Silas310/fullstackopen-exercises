@@ -66,8 +66,39 @@ test('if likes property is missing, it defaults to 0', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/);
 
-  console.log('response body: ', response.body);
   assert.strictEqual(response.body.likes, 0);
+});
+
+test('title is required', async () => {
+  const newBlog = {
+    author: "Silas",
+    url: "https://test.com",
+    likes: 5
+  };
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400);
+  
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+});
+
+test('url is required', async () => {
+  const newBlog = {
+    title: "Test Blog",
+    author: "Silas",
+    likes: 5
+  };
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
 });
 
 
