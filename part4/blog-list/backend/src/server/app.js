@@ -3,8 +3,7 @@ const app = express();
 const blogRouter = require('../controllers/blogs');
 const mongoose = require('mongoose');
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const PORT = process.env.PORT;
+const { MONGODB_URI } = require('../utils/config');
 
 mongoose.connect(MONGODB_URI, {})
   .then(() => {
