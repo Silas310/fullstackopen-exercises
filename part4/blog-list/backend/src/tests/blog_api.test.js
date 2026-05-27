@@ -53,6 +53,53 @@ test('successful blog creation', async () => {
   assert.ok(titles.includes('Test Blog'));
 });
 
+test('successful blog update', async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToUpdate = blogsAtStart[0];
+
+  const outdatedBlogData = {
+    title: blogToUpdate.title,
+    author: blogToUpdate.author,
+    url: blogToUpdate.url,
+    likes: blogToUpdate.likes
+  };
+  
+   // Ensure the blog exists before updating 
+  const response = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(outdatedBlogData)
+    .expect(200);
+
+   // Verify the blog data is unchanged after the update
+  assert.strictEqual(response.body.title, outdatedBlogData.title);
+  assert.strictEqual(response.body.author, outdatedBlogData.author);
+  assert.strictEqual(response.body.url, outdatedBlogData.url);
+  assert.strictEqual(response.body.likes, outdatedBlogData.likes);
+
+   // Now update the blog with new data
+
+  const updatedBlogData = {
+    title: "Updated Title",
+    author: "Updated Author",
+    url: "https://updated.com",
+    likes: 10
+  };
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlogData)
+    .expect(200);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+
+  const updatedBlog = blogsAtEnd.find(b => b.id === blogToUpdate.id);
+  assert.strictEqual(updatedBlog.title, "Updated Title");
+  assert.strictEqual(updatedBlog.author, "Updated Author");
+  assert.strictEqual(updatedBlog.url, "https://updated.com");
+  assert.strictEqual(updatedBlog.likes, 10);
+});
+
 test('successful blog deletion', async () => {
   const blogsAtStart = await helper.blogsInDb();
   const blogToDelete = blogsAtStart[0];
