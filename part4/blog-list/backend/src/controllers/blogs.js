@@ -12,8 +12,13 @@ const create = async (request, response) => {
   response.status(201).json(result);
 };
 
+const deleteBlog = async (request, response) => {
+  await Blog.findByIdAndDelete(request.params.id);
+  response.status(204).end();
+}
+
 blogsRouter.get('/', getAll);
 blogsRouter.post('/', create);
-
+blogsRouter.delete('/:id', deleteBlog);
 
 module.exports = blogsRouter;

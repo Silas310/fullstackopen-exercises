@@ -15,7 +15,6 @@ const initialBlogs = [
   }
 ]
 
-// Função utilitária para buscar todos os blogs do banco em formato JSON
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())

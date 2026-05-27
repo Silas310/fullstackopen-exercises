@@ -53,6 +53,21 @@ test('successful blog creation', async () => {
   assert.ok(titles.includes('Test Blog'));
 });
 
+test('successful blog deletion', async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToDelete = blogsAtStart[0];
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1);
+
+  const titles = blogsAtEnd.map(b => b.title);
+  assert.ok(!titles.includes(blogToDelete.title));
+});
+
 test('if likes property is missing, it defaults to 0', async () => {
   const newBlog = {
     title: "Test Blog Without Likes",
