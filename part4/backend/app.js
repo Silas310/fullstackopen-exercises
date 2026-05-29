@@ -4,6 +4,7 @@ const config = require('./utils/config')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
 const notesRouter = require('./controllers/notes')
+const usersRouter = require('./controllers/users')
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use('/api/notes', notesRouter) // when the path starts with /api/notes, the notesRouter will handle the requests
+app.use('/api/users', usersRouter) // when the path starts with /api/users, the usersRouter will handle the requests
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
