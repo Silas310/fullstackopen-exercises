@@ -1,3 +1,8 @@
+// refaqctor into three components: Form for login, Form for adding a new note, and List of notes
+
+import NoteList from './components/NoteList'
+import LoginForm from './components/LoginForm'
+import AddNoteForm from './components/AddNoteForm'
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
 import Notification from './components/Notification'
@@ -42,7 +47,7 @@ const App = () => {
       .then((returnedNote) => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)))
       })
-      .catch((error) => {
+      .catch(() => {
         setErrorMessage(
           `Note '${note.content}' was already removed from server`
         )
@@ -78,55 +83,34 @@ const App = () => {
     }
   }
 
-
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
 
       <h2>Login</h2>
-        <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      {!user && (
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+        />
+      )}
+      {user && (
         <div>
-          <label>
-            username
-            <input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </label>
+          <p>{user.name} logged in</p>
+          <AddNoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange} />
         </div>
-        <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">login</button>
-      </form>
+      )}
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <ul>
-        {notesToShow.map((note) => (
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        ))}
-      </ul>
-      <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange} />
-        <button type="submit">save</button>
-      </form>
+      <NoteList notesToShow={notesToShow} toggleImportanceOf={toggleImportanceOf} />
+      
       <Footer />
     </div>
   )
