@@ -25,7 +25,7 @@ function AddBlogForm({ onAddBlog }) {
       [name]: value
     })
   }
-   
+
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>

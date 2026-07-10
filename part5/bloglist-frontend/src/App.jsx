@@ -4,6 +4,7 @@ import Blog from './components/Blog'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import AddBlogForm from './components/AddBlogForm'
+import NotificationMessage from './components/NotificationMessage'
 import blogService from './services/blogs'
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [notification, setNotification] = useState('')
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -26,6 +28,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) {
+      setNotification(`Error logging in: ${error.response.data.error}`)
       console.log(`${error.response.data.error}`)
     }
 
@@ -41,8 +44,17 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
+      setNotification(`A new blog "${newBlog.title}" by "${newBlog.author}" added`)
+      console.log(newBlog);
+      setTimeout(() => {
+        setNotification('')
+      }, 5000)
     } catch (error) {
-      console.error('Error creating blog:', error)
+      setNotification(`Error creating blog: ${error.response.data.error}`)
+      console.log(error.response.data.error);
+      setTimeout(() => {
+        setNotification('')
+      }, 5000)
     }
   }
 
@@ -66,9 +78,10 @@ const App = () => {
 
   return (
     <div>
+      <h2>blogs</h2>
+      <NotificationMessage message={notification} />
       {user && (
         <div>
-          <h2>blogs</h2>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           <AddBlogForm onAddBlog={handleAddBlog} />
