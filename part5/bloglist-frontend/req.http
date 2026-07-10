@@ -1,5 +1,1 @@
-POST http://localhost:3001/api/login
-{
-  "username": "silascosta",
-  "password": "vascodagama"
-}
+GET http://localhost:3001/api/blogs

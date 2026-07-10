@@ -3,6 +3,7 @@ import axios from 'axios'
 import Blog from './components/Blog'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
+import AddBlogForm from './components/AddBlogForm'
 import blogService from './services/blogs'
 
 const App = () => {
@@ -36,6 +37,16 @@ const App = () => {
     blogService.setToken(null)
   }
 
+  const handleAddBlog = async (blogObject) => {
+    try {
+      const newBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(newBlog))
+    } catch (error) {
+      console.error('Error creating blog:', error)
+    }
+  }
+
+
   useEffect(() => { // check if user is logged in by local storage and set user state accordingly
     const loggedUser = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUser) {
@@ -60,6 +71,7 @@ const App = () => {
           <h2>blogs</h2>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
+          <AddBlogForm onAddBlog={handleAddBlog} />
           <BlogList blogs={blogs} />
         </div>
       )}
