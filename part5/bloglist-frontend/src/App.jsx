@@ -14,16 +14,38 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
 
-    const user = await axios.post('/api/login', { username, password })
-    blogService.setToken(user.data.token)
+    try {
+      const user = await axios.post('/api/login', { username, password })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user.data))
 
-    console.log(user.data)
-    setUser(user.data)
-    setUsername('')
-    setPassword('')
+      blogService.setToken(user.data.token)
+      console.log(user.data)
+
+      setUser(user.data)
+      setUsername('')
+      setPassword('')
+    } catch (error) {
+      console.log(`${error.response.data.error}`)
+    }
+
   }
 
-  useEffect(() => {
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+    blogService.setToken(null)
+  }
+
+  useEffect(() => { // check if user is logged in by local storage and set user state accordingly
+    const loggedUser = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
+  useEffect(() => { // fetch blogs from backend if user is logged in
     if (user) {
       blogService.getAll().then(blogs =>
         setBlogs(blogs)
@@ -33,10 +55,15 @@ const App = () => {
 
   return (
     <div>
-      {user && <h2>blogs</h2>}
-      {user && <p>{user.name} logged in</p>}
+      {user && (
+        <div>
+          <h2>blogs</h2>
+          <p>{user.name} logged in</p>
+          <button onClick={handleLogout}>logout</button>
+          <BlogList blogs={blogs} />
+        </div>
+      )}
       {!user && <LoginForm handleLogin={handleLogin} setUsername={setUsername} setPassword={setPassword} />}
-      {user && <BlogList blogs={blogs} />}
     </div>
   )
 }

@@ -12,11 +12,11 @@ function LoginForm({handleLogin, setUsername, setPassword}) {
     <form onSubmit={handleLogin}>
       <h2>log in to app</h2>
       <div style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
-        <label for="username">
+        <label htmlFor="username">
           username:
           <input type="text" name="username" id="username" onChange={handleInputs} />
         </label>
-        <label for="password">
+        <label htmlFor="password">
           password:
           <input type="password" name="password" id="password" onChange={handleInputs} />
         </label>
