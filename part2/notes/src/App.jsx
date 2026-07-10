@@ -25,6 +25,18 @@ const App = () => {
     })
   }, [])
 
+  useEffect( () => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user) // potentially render two times, but not a big deal
+      // use lazy initialization to avoid rendering twice
+      // user is now logged forever, even after refreshing the page.
+      // Opt exercise: add a logout timer.
+      noteService.setToken(user.token)
+    }
+  }, [])
+
   const addNote = (event) => {
     event.preventDefault()
     const noteObject = {
@@ -72,6 +84,8 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
+      noteService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
