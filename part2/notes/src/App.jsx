@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import Footer from './components/Footer'
 import noteService from './services/notes'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [notes, setNotes] = useState(null)
@@ -15,8 +16,8 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
 
+  
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
       setNotes(initialNotes)
@@ -98,30 +99,27 @@ const App = () => {
       <Notification message={errorMessage} />
 
       {!user && (
-        <div>
-          {!loginVisible ? (
-            <button onClick={() => setLoginVisible(true)}>log in</button>
-          ) : (
-            <LoginForm
-              handleSubmit={handleLogin}
-              handleUsernameChange={({ target }) => setUsername(target.value)}
-              handlePasswordChange={({ target }) => setPassword(target.value)}
-              username={username}
-              password={password}
-              setLoginVisible={setLoginVisible}
-            />
-          )}
-        </div>
+        <Togglable buttonLabel="log in">
+          <LoginForm
+            handleSubmit={handleLogin}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            username={username}
+            password={password}
+          />
+        </Togglable>
       )}
 
       {user && (
         <div>
           <p>{user.name} logged in</p>
-          <AddNoteForm 
-            addNote={addNote} 
-            newNote={newNote} 
-            handleNoteChange={handleNoteChange} 
-          />
+          <Togglable buttonLabel="new note">
+            <AddNoteForm 
+              addNote={addNote} 
+              newNote={newNote} 
+              handleNoteChange={handleNoteChange} 
+            />
+          </Togglable>
           
           <div style={{ marginTop: '10px', marginBottom: '10px' }}>
             <button onClick={() => setShowAll(!showAll)}>
