@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import Toggleable from './Toggleable'
 
 function AddBlogForm({ onAddBlog }) {
   const [formData, setFormData] = useState({
@@ -28,20 +28,22 @@ function AddBlogForm({ onAddBlog }) {
 
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
-      <h2>create new</h2>
-      <label htmlFor="title">
-        <input type="text" name="title" id="title" placeholder="Title" value={formData.title} onChange={handleInputChange} />
-      </label>
-      <label htmlFor="author">
-        <input type="text" name="author" id="author" placeholder="Author" value={formData.author} onChange={handleInputChange} />
-      </label>
-      <label htmlFor="url">
-        <input type="text" name="url" id="url" placeholder="URL" value={formData.url} onChange={handleInputChange} />
-      </label>
-      <button type="submit">create</button>
-    </form>
-  )
+    <Toggleable buttonLabel="create new blog">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
+        <h2>create new</h2>
+        <label htmlFor="title">
+          <input type="text" name="title" id="title" placeholder="Title" value={formData.title} onChange={handleInputChange} />
+        </label>
+        <label htmlFor="author">
+          <input type="text" name="author" id="author" placeholder="Author" value={formData.author} onChange={handleInputChange} />
+        </label>
+        <label htmlFor="url">
+          <input type="text" name="url" id="url" placeholder="URL" value={formData.url} onChange={handleInputChange} />
+        </label>
+        <button type="submit">create</button>
+      </form>
+    </Toggleable>
+    )
 }
 
 export default AddBlogForm
