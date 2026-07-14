@@ -1,7 +1,35 @@
-const Blog = ({ blog }) => (
-  <div>
-    {blog.title} {blog.author}
-  </div>  
-)
+import { useState } from 'react'
+// set Likes + 1
+// make request to update the likes in the backend
+
+
+function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike }) {
+  const [likes, setLikes] = useState(blog.likes)
+
+
+  const handleLike = async () => {
+    // use setLikes and prop function to update the likes in the backend
+    setLikes(likes + 1)
+    await onLike(blog.id)
+  }
+
+
+  return (
+    <div key={blog.id} style={{ border: '1px solid blue'  }}>
+      <p style={{display: 'inline-block', marginRight: '10px'}}>{blog.title}</p>
+      <button onClick={ () => changeVisibleDetails(blog.id) }>{detailsVisibleStatus === blog.id ? 'hide' : 'view'}</button>
+    {detailsVisibleStatus === blog.id && 
+    ( // accordion mode
+      <div>
+        <p>Author: {blog.author}</p>
+        <p>URL: {blog.url}</p>
+        <div style={{display:'flex', alignItems: 'center', gap: '10px'}}>
+          <p>Likes: {likes}</p>
+          <button onClick={handleLike}>like</button>
+        </div>
+      </div>  
+    )}
+  </div> 
+)}
 
 export default Blog

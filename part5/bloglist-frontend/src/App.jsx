@@ -13,6 +13,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [notification, setNotification] = useState('')
+  
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -58,6 +59,21 @@ const App = () => {
     }
   }
 
+  const handleLike = async (blogId) => {
+    try {
+      const blogToLike = blogs.find(blog => blog.id === blogId) // get the blog
+      const updatedBlog = { 
+        ...blogToLike, 
+        likes: blogToLike.likes + 1 ,
+        user: blogToLike.user.id || blogToLike.user
+      } // update only likes
+      const response = await blogService.update(blogId, updatedBlog) // send new blog to backend and get the updated blog
+      setBlogs(blogs.map(blog => blog.id === blogId ? response : blog)) // update the frontend state
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   useEffect(() => { // check if user is logged in by local storage and set user state accordingly
     const loggedUser = window.localStorage.getItem('loggedBlogappUser')
@@ -85,7 +101,7 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           <AddBlogForm onAddBlog={handleAddBlog} />
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} onLike={handleLike} />
         </div>
       )}
       {!user && <LoginForm handleLogin={handleLogin} setUsername={setUsername} setPassword={setPassword} />}

@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import Blog from './Blog'
 
-
-function BlogList({ blogs }) {
+function BlogList({ blogs, onLike }) {
   const [detailsVisibleStatus, setDetailsVisibleStatus] = useState(null)
   
 
@@ -16,17 +16,13 @@ function BlogList({ blogs }) {
   return (
     <div>
       {blogs.map(blog => (
-        <div key={blog.id} style={{ border: '1px solid blue'  }}>
-          <p style={{display: 'inline-block', marginRight: '10px'}}>{blog.title}</p>
-          <button onClick={ () => changeVisibleDetails(blog.id) }>{detailsVisibleStatus === blog.id ? 'hide' : 'view'}</button>
-          {detailsVisibleStatus === blog.id && ( // accordion mode
-            <div>
-              <p>Author: {blog.author}</p>
-              <p>URL: {blog.url}</p>
-              <p>Likes: {blog.likes}</p>
-            </div>  
-          )}
-        </div>
+        <Blog 
+        key={blog.id} 
+        blog={blog} 
+        detailsVisibleStatus={detailsVisibleStatus} 
+        changeVisibleDetails={changeVisibleDetails} 
+        onLike={onLike}
+      />
       ))}
     </div>
   )

@@ -48,9 +48,13 @@ const create = async (request, response) => {
 };
 
 const update = async (request, response) => {
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { returnDocument: 'after' });
-  response.json(updatedBlog);
-}
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true });
+    response.json(updatedBlog);
+  } catch (error) {
+    response.status(400).json({ error: 'Error updating blog' });
+  }
+};
 
 const deleteBlog = async (request, response) => {
   await Blog.findByIdAndDelete(request.params.id);
