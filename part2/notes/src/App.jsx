@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import NoteList from "./components/NoteList";
 import LoginForm from "./components/LoginForm";
 import AddNoteForm from "./components/AddNoteForm";
@@ -18,6 +18,8 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedNoteappUser");
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null;
   });
+  const noteFormRef = useRef();
+
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
@@ -32,6 +34,7 @@ const App = () => {
   }, [user]);
 
   const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility()
     noteService.create(noteObject).then((returnedNote) => {
       setNotes((previousNotes) => previousNotes.concat(returnedNote));
     });
@@ -100,7 +103,7 @@ const App = () => {
       {user && (
         <div>
           <p>{user.name} logged in</p>
-          <Togglable buttonLabel="new note">
+          <Togglable buttonLabel="new note" ref={noteFormRef}>
             <AddNoteForm createNote={addNote} />
           </Togglable>
 
