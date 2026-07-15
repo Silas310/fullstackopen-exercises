@@ -12,4 +12,9 @@ export default defineConfig({
       },
     }
   },
+  test: {
+    environment: 'jsdom',
+    globals: true, // allows us to use jest-like global functions like describe, test, expect, etc. without importing them
+    setupFiles: './testSetup.js',
+  }
 })
