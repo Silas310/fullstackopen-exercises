@@ -13,6 +13,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [notification, setNotification] = useState('')
+
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
   
 
   const handleLogin = async (event) => {
@@ -101,7 +103,7 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           <AddBlogForm onAddBlog={handleAddBlog} />
-          <BlogList blogs={blogs} onLike={handleLike} />
+          <BlogList blogs={sortedBlogs} onLike={handleLike} />
         </div>
       )}
       {!user && <LoginForm handleLogin={handleLogin} setUsername={setUsername} setPassword={setPassword} />}
