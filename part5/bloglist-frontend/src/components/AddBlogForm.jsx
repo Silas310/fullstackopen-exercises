@@ -43,7 +43,7 @@ function AddBlogForm({ onAddBlog }) {
         <button type="submit">create</button>
       </form>
     </Toggleable>
-    )
+  )
 }
 
 export default AddBlogForm

@@ -29,8 +29,8 @@ const update = async (id, updatedObject) => {
     })
     return response.data
   } catch (error) {
-    console.error(`Error updating blog: ${error}`);
-    throw error;
+    console.error(`Error updating blog: ${error}`)
+    throw error
   }
 }
 
@@ -41,8 +41,8 @@ const remove = async (id) => {
     })
     return response.data
   } catch (error) {
-    console.error(`Error deleting blog: ${error}`);
-    throw error;
+    console.error(`Error deleting blog: ${error}`)
+    throw error
   }
 }
 

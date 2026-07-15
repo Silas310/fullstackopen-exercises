@@ -15,7 +15,7 @@ const App = () => {
   const [notification, setNotification] = useState('')
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
-  
+
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -48,13 +48,13 @@ const App = () => {
       const newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
       setNotification(`A new blog "${newBlog.title}" by "${newBlog.author}" added`)
-      console.log(newBlog);
+      console.log(newBlog)
       setTimeout(() => {
         setNotification('')
       }, 5000)
     } catch (error) {
       setNotification(`Error creating blog: ${error.response.data.error}`)
-      console.log(error.response.data.error);
+      console.log(error.response.data.error)
       setTimeout(() => {
         setNotification('')
       }, 5000)
@@ -64,15 +64,15 @@ const App = () => {
   const handleLike = async (blogId) => {
     try {
       const blogToLike = blogs.find(blog => blog.id === blogId) // get the blog
-      const updatedBlog = { 
-        ...blogToLike, 
+      const updatedBlog = {
+        ...blogToLike,
         likes: blogToLike.likes + 1 ,
         user: blogToLike.user.id || blogToLike.user
       } // update only likes
       const response = await blogService.update(blogId, updatedBlog) // send new blog to backend and get the updated blog
       setBlogs(blogs.map(blog => blog.id === blogId ? response : blog)) // update the frontend state
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
@@ -83,19 +83,19 @@ const App = () => {
     try {
       const deletedBlog = blogs.find(blog => blog.id === blogId)
       if (!deletedBlog) {
-        console.error(`Blog with id ${blogId} not found`);
-        return;
+        console.error(`Blog with id ${blogId} not found`)
+        return
       }
 
       const confirmDelete = window.confirm(`Are you sure you want to delete the blog "${deletedBlog.title}" by "${deletedBlog.author}"?`)
       if (confirmDelete) {
         const response = await blogService.remove(blogId) // send delete request to backend
         setBlogs(blogs.filter(blog => blog.id !== blogId)) // update frontend state
-        
+
         return response
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 

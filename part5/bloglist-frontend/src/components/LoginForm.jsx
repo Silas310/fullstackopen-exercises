@@ -1,11 +1,11 @@
-function LoginForm({handleLogin, setUsername, setPassword}) {
+function LoginForm({ handleLogin, setUsername, setPassword }) {
   const handleInputs = (event) => {
-    if (event.target.name === "username") {
-      setUsername(event.target.value);
-    } else if (event.target.name === "password") {
-      setPassword(event.target.value);
+    if (event.target.name === 'username') {
+      setUsername(event.target.value)
+    } else if (event.target.name === 'password') {
+      setPassword(event.target.value)
     }
-  };
+  }
 
 
   return (
@@ -20,11 +20,11 @@ function LoginForm({handleLogin, setUsername, setPassword}) {
           password:
           <input type="password" name="password" id="password" onChange={handleInputs} />
         </label>
-        <button type="submit" style={{ padding: '0.4rem 0.1rem', 
+        <button type="submit" style={{ padding: '0.4rem 0.1rem',
           width: 'fit-content' }}>login</button>
       </div>
     </form>
-  );
+  )
 }
 
-export default LoginForm;
+export default LoginForm
