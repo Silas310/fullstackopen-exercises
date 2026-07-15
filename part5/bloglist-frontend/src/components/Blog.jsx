@@ -3,7 +3,7 @@ import { useState } from 'react'
 // make request to update the likes in the backend
 
 
-function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike }) {
+function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike, onDelete }) {
   const [likes, setLikes] = useState(blog.likes)
 
 
@@ -11,6 +11,15 @@ function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike }) {
     // use setLikes and prop function to update the likes in the backend
     setLikes(likes + 1)
     await onLike(blog.id)
+  }
+
+
+  const handleDelete = async () => {
+    try {
+      await onDelete(blog.id)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
 
@@ -27,6 +36,7 @@ function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike }) {
           <p>Likes: {likes}</p>
           <button onClick={handleLike}>like</button>
         </div>
+        <button onClick={handleDelete}>Remove</button>
       </div>  
     )}
   </div> 

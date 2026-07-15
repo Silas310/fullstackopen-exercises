@@ -76,6 +76,29 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (blogId) => {
+    // delete from state
+    // fetch frontend to delete from backend
+    // delete route exists?
+    try {
+      const deletedBlog = blogs.find(blog => blog.id === blogId)
+      if (!deletedBlog) {
+        console.error(`Blog with id ${blogId} not found`);
+        return;
+      }
+
+      const confirmDelete = window.confirm(`Are you sure you want to delete the blog "${deletedBlog.title}" by "${deletedBlog.author}"?`)
+      if (confirmDelete) {
+        const response = await blogService.remove(blogId) // send delete request to backend
+        setBlogs(blogs.filter(blog => blog.id !== blogId)) // update frontend state
+        
+        return response
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   useEffect(() => { // check if user is logged in by local storage and set user state accordingly
     const loggedUser = window.localStorage.getItem('loggedBlogappUser')
@@ -103,7 +126,11 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           <AddBlogForm onAddBlog={handleAddBlog} />
-          <BlogList blogs={sortedBlogs} onLike={handleLike} />
+          <BlogList
+            blogs={sortedBlogs}
+            onLike={handleLike}
+            onDelete={handleDelete}
+          />
         </div>
       )}
       {!user && <LoginForm handleLogin={handleLogin} setUsername={setUsername} setPassword={setPassword} />}

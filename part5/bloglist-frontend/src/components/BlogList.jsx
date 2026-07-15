@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Blog from './Blog'
 
-function BlogList({ blogs, onLike }) {
+function BlogList({ blogs, onLike, onDelete }) {
   const [detailsVisibleStatus, setDetailsVisibleStatus] = useState(null)
   
 
@@ -22,6 +22,7 @@ function BlogList({ blogs, onLike }) {
         detailsVisibleStatus={detailsVisibleStatus} 
         changeVisibleDetails={changeVisibleDetails} 
         onLike={onLike}
+        onDelete={onDelete}
       />
       ))}
     </div>
