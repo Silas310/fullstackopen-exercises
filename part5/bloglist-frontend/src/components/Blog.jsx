@@ -16,7 +16,7 @@ function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike, onDele
 
   return (
     <div key={blog.id} style={{ border: '1px solid blue'  }}>
-      <p style={{ display: 'inline-block', marginRight: '10px' }}>{blog.title}</p>
+      <p style={{ display: 'inline-block', marginRight: '10px' }}>{blog.title} {blog.author}</p>
       <button onClick={ () => changeVisibleDetails(blog.id) }>{detailsVisibleStatus === blog.id ? 'hide' : 'view'}</button>
       {detailsVisibleStatus === blog.id &&
     ( // accordion mode
