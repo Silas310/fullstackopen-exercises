@@ -1,15 +1,6 @@
-import { useState } from 'react'
-// set Likes + 1
-// make request to update the likes in the backend
-
-
 function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike, onDelete }) {
-  const [likes, setLikes] = useState(blog.likes)
-
-
   const handleLike = async () => {
     // use setLikes and prop function to update the likes in the backend
-    setLikes(likes + 1)
     await onLike(blog.id)
   }
 
@@ -33,7 +24,7 @@ function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike, onDele
         <p>Author: {blog.author}</p>
         <p>URL: {blog.url}</p>
         <div style={{ display:'flex', alignItems: 'center', gap: '10px' }}>
-          <p>Likes: {likes}</p>
+          <p>Likes: {blog.likes}</p>
           <button onClick={handleLike}>like</button>
         </div>
         <button onClick={handleDelete}>Remove</button>
