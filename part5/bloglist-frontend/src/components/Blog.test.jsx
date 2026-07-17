@@ -1,33 +1,82 @@
+import { describe, test, beforeEach, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-
 describe('<Blog />', () => {
-  beforeEach(() => {
-    const blog =
-      {
-        id: '1',
-        title: 'Test Blog 1',
-        author: 'Author 1',
-        url: 'http://testblog1.com',
-        likes: 5
-      }
+  let blog
+  let mockChangeVisibleDetails
 
-    render(<Blog blog={blog}></Blog>)
+  beforeEach(() => {
+    blog = {
+      id: '1',
+      title: 'Test Blog 1',
+      author: 'Author 1',
+      url: 'http://testblog1.com',
+      likes: 5
+    }
+
+    mockChangeVisibleDetails = vi.fn()
   })
 
   test('renders title and author initially', () => {
-    const text = screen.getByText('Test Blog 1 Author 1');
+    render(
+      <Blog 
+        blog={blog} 
+        detailsVisibleStatus={null} 
+        changeVisibleDetails={mockChangeVisibleDetails} 
+      />
+    )
 
-    expect(text).toBeVisible();
+    const text = screen.getByText('Test Blog 1 Author 1')
+    expect(text).toBeVisible()
   })
 
   test('does not render url and likes initially', () => {
-    const urlElement = screen.queryByText('http://testblog1.com');
-    const likesElement = screen.queryByText('Likes: 5');
+    render(
+      <Blog 
+        blog={blog} 
+        detailsVisibleStatus={null} 
+        changeVisibleDetails={mockChangeVisibleDetails} 
+      />
+    )
 
-    expect(urlElement).not.toBeInTheDocument();
-    expect(likesElement).not.toBeInTheDocument();
+    const urlElement = screen.queryByText('http://testblog1.com')
+    const likesElement = screen.queryByText('Likes: 5')
+
+    expect(urlElement).not.toBeInTheDocument()
+    expect(likesElement).not.toBeInTheDocument()
+  })
+
+  test('checks if url and likes are displayed when the blog is clicked', async () => {
+    const user = userEvent.setup()
+
+    const { rerender } = render(
+      <Blog 
+        blog={blog} 
+        detailsVisibleStatus={null} 
+        changeVisibleDetails={mockChangeVisibleDetails} 
+      />
+    )
+
+    const viewButton = screen.getByText('view')
+    await user.click(viewButton)
+
+    expect(mockChangeVisibleDetails).toHaveBeenCalledWith('1')
+
+    rerender(
+      <Blog 
+        blog={blog} 
+        detailsVisibleStatus="1" 
+        changeVisibleDetails={mockChangeVisibleDetails} 
+      />
+    )
+
+    // exact = false is used to evade formatting issues.
+    const urlElement = screen.getByText('http://testblog1.com', { exact: false })
+    const likesElement = screen.getByText('Likes: 5')
+
+    expect(urlElement).toBeVisible()
+    expect(likesElement).toBeVisible()
   })
 })
