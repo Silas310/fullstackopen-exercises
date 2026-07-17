@@ -95,7 +95,7 @@ describe('<Blog />', () => {
 
     await userEvent.click(screen.getByText('like'))
     await userEvent.click(screen.getByText('like'))
-    
+
     expect(mockOnLike).toHaveBeenCalledTimes(2)
   })
 })
