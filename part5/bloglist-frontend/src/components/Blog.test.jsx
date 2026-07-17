@@ -62,6 +62,7 @@ describe('<Blog />', () => {
     const viewButton = screen.getByText('view')
     await user.click(viewButton)
 
+    // fn called with the correct param(blog id)
     expect(mockChangeVisibleDetails).toHaveBeenCalledWith('1')
 
     rerender(
@@ -78,5 +79,23 @@ describe('<Blog />', () => {
 
     expect(urlElement).toBeVisible()
     expect(likesElement).toBeVisible()
+  })
+
+  test('handler called twice when the blog is liked twice', async () => {
+    const mockOnLike = vi.fn()
+
+    render(
+      <Blog 
+        blog={blog} 
+        detailsVisibleStatus="1" 
+        changeVisibleDetails={mockChangeVisibleDetails} 
+        onLike={mockOnLike}
+      />
+    )
+
+    await userEvent.click(screen.getByText('like'))
+    await userEvent.click(screen.getByText('like'))
+    
+    expect(mockOnLike).toHaveBeenCalledTimes(2)
   })
 })
