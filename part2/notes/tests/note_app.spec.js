@@ -9,8 +9,12 @@ test('front page can be opened', async ({ page }) => {
 })
 
 test.describe('Note app', () => {
+  test.beforeEach(async ({ page }) => {
+      await page.goto('http://localhost:5173')
+    })
+
+
   test('user can log in', async ({ page }) => {
-    await page.goto('http://localhost:5173')
 
     await page.getByRole('button', { name: 'log in' }).click()
     
@@ -20,5 +24,21 @@ test.describe('Note app', () => {
     await page.getByRole('button', { name: 'login' }).click()
 
     await expect(page.getByText('Silas logged in')).toBeVisible()
+  })
+
+  test.describe('when logged in', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.getByRole('button', { name: 'log in' }).click()
+      await page.getByLabel('username').fill('admin')
+      await page.getByLabel('password').fill('12345')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test('a new note can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'new note' }).click()
+      await page.getByRole('textbox').fill('a note created by playwright')
+      await page.getByRole('button', { name: 'save' }).click()
+      await expect(page.getByText('a note created by playwright')).toBeVisible()
+    })
   })
 })
