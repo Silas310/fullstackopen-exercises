@@ -63,17 +63,31 @@ test.describe("Note app", () => {
         ).toBeVisible();
       });
 
-      test("importance can be changed", async ({ page }) => {
-        const note = page
-          .getByRole("listitem")
-          .filter({ hasText: "another note by playwright" });
+      test('importance can be changed', async ({ page }) => {
+        await page.getByRole('button', { name: 'make not important' }).click()
+        await expect(page.getByText('make important')).toBeVisible()
+      })
+    });
 
-        await note.getByRole("button", { name: "make not important" }).click();
-
-        await expect(
-          note.getByRole("button", { name: "make important" }),
-        ).toBeVisible();
+    test.describe("and several notes exist", () => {
+      test.beforeEach(async ({ page }) => {
+        await createNote(page, "first note", true);
+        await createNote(page, "second note", true);
+        await createNote(page, "third note", true);
       });
+
+      test('one of those can be made nonimportant', async ({ page }) => {
+        await page.pause()
+        const otherNoteText = page.getByText("second note");
+        const otherNoteElement = otherNoteText.locator("..");
+
+        await otherNoteElement
+          .getByRole('button', { name: 'make not important' })
+          .click()
+        await expect(otherNoteElement
+          .getByRole('button', { name: 'make important' }))
+          .toBeVisible()
+      })
     });
   });
 });
