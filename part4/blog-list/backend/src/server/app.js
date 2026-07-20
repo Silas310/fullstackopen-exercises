@@ -3,6 +3,7 @@ const app = express();
 const blogRouter = require('../controllers/blogs');
 const userRouter = require('../controllers/users');
 const loginRouter = require('../controllers/login');
+const testingRouter = require('../controllers/testing');
 const mongoose = require('mongoose');
 const {unknownEndpoint, errorHandler} = require('../utils/middleware');
 
@@ -16,7 +17,13 @@ mongoose.connect(MONGODB_URI, {})
     console.error('Error connecting to MongoDB:', error.message);
   });
 
-app.use(express.json());
+app.use(express.json()); // before routes
+
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('../controllers/testing');
+  app.use('/api/testing', testingRouter);
+}
+
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
