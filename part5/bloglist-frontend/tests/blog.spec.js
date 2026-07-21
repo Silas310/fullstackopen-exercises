@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { loginWith } from './helper.js'
 
 test.describe('Blog app', () => {
   test.beforeEach(async ({ page, request }) => {
@@ -49,6 +50,26 @@ test.describe('Blog app', () => {
       await loginButton.click()
 
       await expect(page.getByText('Error logging in: invalid username or password')).toBeVisible()
+    })
+  })
+
+  test.describe('When logged in', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto('http://localhost:5173')
+      await loginWith(page, 'silascosta', 'vascodagama')
+    })
+
+    test.only('a new blog can be created', async ({ page }) => {
+      // click button for creating new blog
+      await page.getByRole('button', {name: 'create new blog'}).click()
+      // fill inputs
+      await page.getByPlaceholder('title').fill('Test Blog Title')
+      await page.getByPlaceholder('author').fill('Test Blog Author')
+      await page.getByPlaceholder('url').fill('http://testblog.com')
+      // send form -> expect to see new blog in list
+      await page.getByRole('button', {name: 'create'}).click()
+
+      await expect(page.getByText('Test Blog Title Test Blog Author')).toBeVisible()
     })
   })
 })
