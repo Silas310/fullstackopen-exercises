@@ -12,6 +12,13 @@ test.describe('Blog app', () => {
         password: 'vascodagama',
       }
     })
+    await request.post('http://localhost:3001/api/testing/users',{
+        data: {
+          username: 'anotheruser',
+          name: 'Another User',
+          password: 'anotherpassword',
+        }
+      })
     await page.goto('http://localhost:5173')
   })
 
@@ -86,7 +93,7 @@ test.describe('Blog app', () => {
       await expect(page.getByText('Likes: 1')).toBeVisible()
     })
 
-    test.only('user can delete a blog', async ({ page }) => {
+    test('user can delete a blog', async ({ page }) => {
       // create a new blog -> click view button
       // get delete button and click it 
       // expect blog to be removed from list
@@ -104,6 +111,24 @@ test.describe('Blog app', () => {
       await expect(page.
         getByText('Test Blog Title Test Blog Author'))
         .not.toBeVisible()
+    })
+
+    test.only('only owner can see delete button', async ({ page }) => {
+      // create two users(beforeEach does one) 
+      // log in with first user and create a blog
+      // log out and log in with second user 
+      // expect not to see delete button
+      await createBlog(page, 'Test Blog Title', 'Test Blog Author',
+        'http://testblog.com')
+
+      await page.getByRole('button', {name: 'logout'}).click()
+
+      await loginWith(page, 'anotheruser', 'anotherpassword')
+
+      await page.getByRole('button', {name: 'view'}).click()
+
+      await expect(page.getByRole('button', {name: 'Remove'})).
+      not.toBeVisible()
     })
   })
 })

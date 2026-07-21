@@ -1,4 +1,11 @@
-function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike, onDelete }) {
+function Blog({ 
+  blog, 
+  detailsVisibleStatus, 
+  changeVisibleDetails, 
+  onLike, 
+  onDelete, 
+  user
+}) {
   const handleLike = async () => {
     // use setLikes and prop function to update the likes in the backend
     await onLike(blog.id)
@@ -27,7 +34,9 @@ function Blog({ blog, detailsVisibleStatus, changeVisibleDetails, onLike, onDele
           <p>Likes: {blog.likes}</p>
           <button onClick={handleLike}>like</button>
         </div>
-        <button onClick={handleDelete}>Remove</button>
+        {user.username === blog.user?.username && (
+          <button onClick={handleDelete}>Remove</button>
+        )}
       </div>
     )}
     </div>

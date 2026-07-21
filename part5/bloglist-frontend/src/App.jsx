@@ -130,6 +130,7 @@ const App = () => {
             blogs={sortedBlogs}
             onLike={handleLike}
             onDelete={handleDelete}
+            user={user}
           />
         </div>
       )}
