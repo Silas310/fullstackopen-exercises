@@ -72,7 +72,7 @@ test.describe('Blog app', () => {
       await expect(page.getByText('Test Blog Title Test Blog Author')).toBeVisible()
     })
 
-    test.only('user can like a blog', async ({ page }) => {
+    test('user can like a blog', async ({ page }) => {
       // create a new blog -> click view button
       // get like button and click it -> expect likes to increase
       await createBlog(page, 'Test Blog Title', 'Test Blog Author',
@@ -84,7 +84,26 @@ test.describe('Blog app', () => {
 
       await likeButton.click()
       await expect(page.getByText('Likes: 1')).toBeVisible()
+    })
 
+    test.only('user can delete a blog', async ({ page }) => {
+      // create a new blog -> click view button
+      // get delete button and click it 
+      // expect blog to be removed from list
+      await createBlog(page, 'Test Blog Title', 'Test Blog Author',
+        'http://testblog.com')
+
+      await page.getByRole('button', {name: 'view'}).click()
+      
+      
+      page.on('dialog', dialog => dialog.accept())
+
+      const deleteButton = page.getByRole('button', {name: 'Remove'})
+      await deleteButton.click()
+
+      await expect(page.
+        getByText('Test Blog Title Test Blog Author'))
+        .not.toBeVisible()
     })
   })
 })
