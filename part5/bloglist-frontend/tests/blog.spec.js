@@ -113,7 +113,7 @@ test.describe('Blog app', () => {
         .not.toBeVisible()
     })
 
-    test.only('only owner can see delete button', async ({ page }) => {
+    test('only owner can see delete button', async ({ page }) => {
       // create two users(beforeEach does one) 
       // log in with first user and create a blog
       // log out and log in with second user 

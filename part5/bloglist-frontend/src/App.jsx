@@ -46,6 +46,12 @@ const App = () => {
   const handleAddBlog = async (blogObject) => {
     try {
       const newBlog = await blogService.create(blogObject)
+
+      newBlog.user = {
+        ...user,
+        id: typeof newBlog.user === 'string' ? newBlog.user : newBlog.user.id
+      }
+
       setBlogs(blogs.concat(newBlog))
       setNotification(`A new blog "${newBlog.title}" by "${newBlog.author}" added`)
       console.log(newBlog)
@@ -66,11 +72,17 @@ const App = () => {
       const blogToLike = blogs.find(blog => blog.id === blogId) // get the blog
       const updatedBlog = {
         ...blogToLike,
-        likes: blogToLike.likes + 1 ,
-        user: blogToLike.user.id || blogToLike.user
+        likes: (blogToLike.likes || 0) + 1,
+        user: blogToLike.user.id
       } // update only likes
+
       const response = await blogService.update(blogId, updatedBlog) // send new blog to backend and get the updated blog
-      setBlogs(blogs.map(blog => blog.id === blogId ? response : blog)) // update the frontend state
+      const returnedBlog = {
+        ...response,
+        user: blogToLike.user // keep the user object as it was
+      }
+
+      setBlogs(blogs.map(blog => blog.id === blogId ? returnedBlog : blog)) // update the frontend state
     } catch (error) {
       console.error(error)
     }

@@ -6,6 +6,8 @@ function Blog({
   onDelete, 
   user
 }) {
+  const isOwner = user && blog.user && user.username === blog.user.username
+
   const handleLike = async () => {
     // use setLikes and prop function to update the likes in the backend
     await onLike(blog.id)
