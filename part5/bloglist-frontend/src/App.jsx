@@ -6,7 +6,10 @@ import LoginForm from './components/LoginForm'
 import AddBlogForm from './components/AddBlogForm'
 import NotificationMessage from './components/NotificationMessage'
 import blogService from './services/blogs'
-import  { Link, Routes, Route, useNavigate } from 'react-router-dom'
+import  { 
+  Link, Routes, Route, 
+  useNavigate, useParams 
+} from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -154,6 +157,18 @@ const App = () => {
       </header>
       <NotificationMessage message={notification} />
       <Routes>
+        <Route 
+          path="/blogs/:id"
+          element={
+            <Blog
+              blogs={blogs}
+              onLike={handleLike}
+              onDelete={handleDelete}
+              user={user}
+              isOwner={user && blogs.find(blog => blog.id === useParams().id)?.user?.username === user.username}
+            />
+          }
+        />
         <Route
           path="/"
           element={

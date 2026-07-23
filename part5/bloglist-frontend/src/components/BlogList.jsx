@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 
 function BlogList({ blogs, onLike, onDelete, user }) {
   const [detailsVisibleStatus, setDetailsVisibleStatus] = useState(null)
@@ -16,17 +16,15 @@ function BlogList({ blogs, onLike, onDelete, user }) {
   return (
     <div>
       <h2>blogs</h2>
-      {blogs.map(blog => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          detailsVisibleStatus={detailsVisibleStatus}
-          changeVisibleDetails={changeVisibleDetails}
-          onLike={onLike}
-          onDelete={onDelete}
-          user={user}
-        />
-      ))}
+      <ul>
+        {blogs.map(blog => (
+          <li>
+            <Link to={`/blogs/${blog.id}`} key={blog.id}>
+              {blog.title} by: '{blog.author}'
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
