@@ -146,6 +146,9 @@ const App = () => {
         <div style={{ display: "flex", listStyle: "none" }}>
           <span>{<Link to="/">blogs</Link>}</span>
           <span style={{ marginLeft: "10px" }}>
+            {user && <Link to="/create">new blog</Link>}
+          </span>
+          <span style={{ marginLeft: "10px" }}>
             {!user ? (
               <Link to="/login">login</Link>
             ) : (
@@ -158,6 +161,15 @@ const App = () => {
       </header>
       <NotificationMessage message={notification} />
       <Routes>
+        <Route
+          path="/create"
+          element={
+            <AddBlogForm
+              onAddBlog={handleAddBlog}
+              user={user}
+            />
+          }
+        />
         <Route 
           path="/blogs/:id"
           element={

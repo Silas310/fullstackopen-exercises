@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import Toggleable from './Toggleable'
+import { useNavigate } from 'react-router-dom'
 
-function AddBlogForm({ onAddBlog }) {
+function AddBlogForm({ onAddBlog, user }) {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
     url: ''
   })
+  const navigate = useNavigate()
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -16,6 +18,7 @@ function AddBlogForm({ onAddBlog }) {
       author: '',
       url: ''
     })
+    navigate('/')
   }
 
   const handleInputChange = (event) => {
