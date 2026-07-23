@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm'
 import AddBlogForm from './components/AddBlogForm'
 import NotificationMessage from './components/NotificationMessage'
 import blogService from './services/blogs'
+import  { Link, Routes, Route, useNavigate } from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,7 +14,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [notification, setNotification] = useState('')
-
+  const navigate = useNavigate()
+  
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
 
@@ -25,7 +27,9 @@ const App = () => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user.data))
 
       blogService.setToken(user.data.token)
-      console.log(user.data)
+      console.log(user.data.token);
+      
+      navigate('/') // redirect to home page after login
 
       setUser(user.data)
       setUsername('')
@@ -41,6 +45,7 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     blogService.setToken(null)
+    navigate('/') // redirect to home page after logout
   }
 
   const handleAddBlog = async (blogObject) => {
@@ -119,36 +124,60 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [navigate]) // add navigate to dependency array to avoid warning
 
   useEffect(() => { // fetch blogs from backend if user is logged in
-    if (user) {
+    try {
       blogService.getAll().then(blogs =>
         setBlogs(blogs)
       )
+    } catch (error) {
+      console.error('Error fetching blogs:', error)
     }
-  }, [user])
+  }, [])
 
   return (
     <div>
-      <h2>blogs</h2>
-      <NotificationMessage message={notification} />
-      {user && (
-        <div>
-          <p>{user.name} logged in</p>
-          <button onClick={handleLogout}>logout</button>
-          <AddBlogForm onAddBlog={handleAddBlog} />
-          <BlogList
-            blogs={sortedBlogs}
-            onLike={handleLike}
-            onDelete={handleDelete}
-            user={user}
-          />
+      <header>
+        <div style={{ display: "flex", listStyle: "none" }}>
+          <span>{<Link to="/">blogs</Link>}</span>
+          <span style={{ marginLeft: "10px" }}>
+            {!user ? (
+              <Link to="/login">login</Link>
+            ) : (
+              <span>
+                <button onClick={handleLogout}>logout</button>
+              </span>
+            )}
+          </span>
         </div>
-      )}
-      {!user && <LoginForm handleLogin={handleLogin} setUsername={setUsername} setPassword={setPassword} />}
+      </header>
+      <NotificationMessage message={notification} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <BlogList
+              blogs={sortedBlogs}
+              onLike={handleLike}
+              onDelete={handleDelete}
+              user={user}
+            />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <LoginForm
+              handleLogin={handleLogin}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            />
+          }
+        />
+      </Routes>
     </div>
-  )
+  );
 }
 
 export default App

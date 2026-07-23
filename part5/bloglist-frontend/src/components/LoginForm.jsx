@@ -10,7 +10,7 @@ function LoginForm({ handleLogin, setUsername, setPassword }) {
 
   return (
     <form onSubmit={handleLogin}>
-      <h2>log in to app</h2>
+      <h2>Log in to app</h2>
       <div style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
         <label htmlFor="username">
           username:
