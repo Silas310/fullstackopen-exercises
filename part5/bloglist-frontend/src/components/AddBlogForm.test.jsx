@@ -2,6 +2,7 @@ import { describe, test, beforeEach, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './AddBlogForm'
+import { MemoryRouter } from 'react-router-dom'
 
 describe('<AddBlogForm />', () => {
   let mockAddBlog
@@ -11,7 +12,11 @@ describe('<AddBlogForm />', () => {
   })
 
   test('event handler is called with the right details when a new blog is created', async () => {
-    render(<Blog onAddBlog={mockAddBlog} />)
+    render(
+      <MemoryRouter>
+        <Blog onAddBlog={mockAddBlog} />
+      </MemoryRouter>
+    );
 
     const user = userEvent.setup()
 

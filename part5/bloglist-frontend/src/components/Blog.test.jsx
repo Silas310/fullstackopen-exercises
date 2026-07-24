@@ -2,10 +2,13 @@ import { describe, test, beforeEach, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
 describe('<Blog />', () => {
   let blog
-  let mockChangeVisibleDetails
+  let mockOnLike
+  let mockOnDelete
+  const user = { username: 'silascosta', name: 'Silas Costa' }
 
   beforeEach(() => {
     blog = {
@@ -13,89 +16,62 @@ describe('<Blog />', () => {
       title: 'Test Blog 1',
       author: 'Author 1',
       url: 'http://testblog1.com',
-      likes: 5
+      likes: 5,
+      user: user // blog needs to have a user property for ownership check
     }
 
-    mockChangeVisibleDetails = vi.fn()
+    mockOnLike = vi.fn()
+    mockOnDelete = vi.fn()
   })
 
-  test('renders title and author initially', () => {
+  const renderBlog = (currentUser = user) => {
     render(
-      <Blog 
-        blog={blog} 
-        detailsVisibleStatus={null} 
-        changeVisibleDetails={mockChangeVisibleDetails} 
-      />
+      <MemoryRouter initialEntries={['/blogs/1']}>
+        <Routes>
+          <Route
+            path="/blogs/:id"
+            element={
+              <Blog
+                blogs={[blog]}
+                user={currentUser}
+                onLike={mockOnLike}
+                onDelete={mockOnDelete}
+              />
+            }
+          />
+        </Routes>
+      </MemoryRouter>
     )
+  }
 
-    const text = screen.getByText('Test Blog 1 Author 1')
-    expect(text).toBeVisible()
+  test('render blog title, url and author', async () => {
+    renderBlog()
+
+    const title = screen.getByText('Test Blog 1')
+    const url = screen.getByText('http://testblog1.com')
+    const author = screen.getByText(/Author 1/)
+
+    expect(title).toBeVisible()
+    expect(url).toBeVisible()
+    expect(author).toBeVisible()
   })
 
-  test('does not render url and likes initially', () => {
-    render(
-      <Blog 
-        blog={blog} 
-        detailsVisibleStatus={null} 
-        changeVisibleDetails={mockChangeVisibleDetails} 
-      />
-    )
+  test('auth user who are not owner only see like', async () => {
+    const anotherUser = { username: 'anotheruser', name: 'Another User' }
+    renderBlog(anotherUser)
 
-    const urlElement = screen.queryByText('http://testblog1.com')
-    const likesElement = screen.queryByText('Likes: 5')
+    const likeButton = screen.getByText('like')
+    const removeButton = screen.queryByText('Remove')
 
-    expect(urlElement).not.toBeInTheDocument()
-    expect(likesElement).not.toBeInTheDocument()
+    expect(likeButton).toBeVisible()
+    expect(removeButton).toBeNull()
   })
 
-  test('checks if url and likes are displayed when the blog is clicked', async () => {
-    const user = userEvent.setup()
+  test('owner can see remove button', async () => {
+    renderBlog(user)
 
-    const { rerender } = render(
-      <Blog 
-        blog={blog} 
-        detailsVisibleStatus={null} 
-        changeVisibleDetails={mockChangeVisibleDetails} 
-      />
-    )
+    const removeButton = screen.queryByText('Remove')
 
-    const viewButton = screen.getByText('view')
-    await user.click(viewButton)
-
-    // fn called with the correct param(blog id)
-    expect(mockChangeVisibleDetails).toHaveBeenCalledWith('1')
-
-    rerender(
-      <Blog 
-        blog={blog} 
-        detailsVisibleStatus="1" 
-        changeVisibleDetails={mockChangeVisibleDetails} 
-      />
-    )
-
-    // exact = false is used to evade formatting issues.
-    const urlElement = screen.getByText('http://testblog1.com', { exact: false })
-    const likesElement = screen.getByText('Likes: 5')
-
-    expect(urlElement).toBeVisible()
-    expect(likesElement).toBeVisible()
-  })
-
-  test('handler called twice when the blog is liked twice', async () => {
-    const mockOnLike = vi.fn()
-
-    render(
-      <Blog 
-        blog={blog} 
-        detailsVisibleStatus="1" 
-        changeVisibleDetails={mockChangeVisibleDetails} 
-        onLike={mockOnLike}
-      />
-    )
-
-    await userEvent.click(screen.getByText('like'))
-    await userEvent.click(screen.getByText('like'))
-
-    expect(mockOnLike).toHaveBeenCalledTimes(2)
+    expect(removeButton).toBeVisible()
   })
 })

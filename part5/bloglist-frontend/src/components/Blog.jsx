@@ -9,8 +9,10 @@ function Blog({
   onDelete, 
   user,
 }) {
-  const id = useParams().id
+  const id = useParams().id // get the blog id from the URL params
+  // Check if the current user is the owner of the blog
   const isOwner = user && blogs.find(blog => blog.id === id)?.user?.username === user.username
+  // Find the blog with the matching id from the blogs array
   const blog = blogs.find(blog => blog.id === id)
   
 
