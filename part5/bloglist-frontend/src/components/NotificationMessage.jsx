@@ -4,7 +4,7 @@ const NotificationMessage = ({ message }) => {
   }
 
   return (
-    <div style={{ backgroundColor: 'lightgray', border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}>
+    <div style={{padding: '10px', margin: '10px 0' }}>
       {message}
     </div>
   )

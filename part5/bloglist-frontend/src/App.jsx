@@ -10,6 +10,7 @@ import  {
   Link, Routes, Route, 
   useNavigate, useParams 
 } from 'react-router-dom'
+import styled from 'styled-components'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -22,6 +23,20 @@ const App = () => {
   
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
+  const Navigation = styled.header`
+    background: #154bff;
+    padding: 2em;
+    display: flex;
+    gap: 1em;
+    color: white;
+  `
+  const Notification = styled.div`
+    color: ${props => props.type === 'error' ? 'red' : 'green'};
+    background: #f0f0f0c5;
+    font-size: 1.2em;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  `
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -142,24 +157,33 @@ const App = () => {
 
   return (
     <div>
-      <header>
-        <div style={{ display: "flex", listStyle: "none" }}>
-          <span>{<Link to="/">blogs</Link>}</span>
-          <span style={{ marginLeft: "10px" }}>
-            {user && <Link to="/create">new blog</Link>}
-          </span>
-          <span style={{ marginLeft: "10px" }}>
-            {!user ? (
-              <Link to="/login">login</Link>
-            ) : (
-              <span>
-                <button onClick={handleLogout}>logout</button>
-              </span>
-            )}
-          </span>
+      <Navigation>
+        <div style={
+          { display: "flex", listStyle: "none", alignItems: "center", 
+          justifyContent: "space-between", width: "100%" }}>
+          <h1>Blog App</h1>
+          <div style={{ display: "flex", listStyle: "none", 
+            alignItems: "center", justifyContent: "space-between", 
+            gap: "10px"}}>
+            <span>{<Link to="/">blogs</Link>}</span>
+            <span style={{ marginLeft: "10px" }}>
+              {user && <Link to="/create">new blog</Link>}
+            </span>
+            <span style={{ marginLeft: "10px" }}>
+              {!user ? (
+                <Link to="/login">login</Link>
+              ) : (
+                <span>
+                  <button onClick={handleLogout}>logout</button>
+                </span>
+              )}
+            </span>
+          </div>
         </div>
-      </header>
-      <NotificationMessage message={notification}/>
+      </Navigation>
+      <Notification>
+        <NotificationMessage message={notification}/>
+      </Notification>
       <Routes>
         <Route
           path="/create"

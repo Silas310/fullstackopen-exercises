@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-
 function Toggleable(props) {
   const [isVisible, setIsVisible] = useState(false)
 
