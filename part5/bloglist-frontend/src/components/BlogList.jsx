@@ -18,7 +18,7 @@ function BlogList({ blogs, onLike, onDelete, user }) {
       <h2>blogs</h2>
       <ul>
         {blogs.map(blog => (
-          <li>
+          <li key={blog.id}>
             <Link to={`/blogs/${blog.id}`} key={blog.id}>
               {blog.title} by: '{blog.author}'
             </Link>

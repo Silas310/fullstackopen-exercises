@@ -159,7 +159,7 @@ const App = () => {
           </span>
         </div>
       </header>
-      <NotificationMessage message={notification} />
+      <NotificationMessage message={notification}/>
       <Routes>
         <Route
           path="/create"

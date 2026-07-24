@@ -1,4 +1,9 @@
+import { Button } from './Button.styles.js'
+import { Input } from './Input.styles.js'
+
+
 function LoginForm({ handleLogin, setUsername, setPassword }) {
+  
   const handleInputs = (event) => {
     if (event.target.name === 'username') {
       setUsername(event.target.value)
@@ -12,16 +17,25 @@ function LoginForm({ handleLogin, setUsername, setPassword }) {
     <form onSubmit={handleLogin}>
       <h2>Log in to app</h2>
       <div style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
-        <label htmlFor="username">
-          username:
-          <input type="text" name="username" id="username" onChange={handleInputs} />
+        <label htmlFor="username" aria-label="username">
+          <Input 
+            type="text" 
+            name="username" 
+            id="username" 
+            onChange={handleInputs} 
+            placeholder="  username"
+          />
         </label>
-        <label htmlFor="password">
-          password:
-          <input type="password" name="password" id="password" onChange={handleInputs} />
+        <label htmlFor="password" aria-label="password">
+          <Input 
+            type="password" 
+            name="password" 
+            id="password" 
+            onChange={handleInputs}
+            placeholder="  password"
+          />
         </label>
-        <button type="submit" style={{ padding: '0.4rem 0.1rem',
-          width: 'fit-content' }}>login</button>
+        <Button>login</Button>
       </div>
     </form>
   )
