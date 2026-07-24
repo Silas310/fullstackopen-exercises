@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import noteService from './services/notes'
+import { Container } from '@mui/material';
+import Notification from './components/Notification'
+import Navigation from './components/Navigation'
 
 import {
   Routes, Route, Link, useMatch
@@ -13,6 +16,7 @@ import Note from './components/Note'
 
 const App = () => {
   const [notes, setNotes] = useState([])
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
@@ -32,6 +36,12 @@ const App = () => {
     noteService.create(noteObject).then(returnedNote => {
       setNotes(notes.concat(returnedNote))
     })
+    setNotification({text: `Note: "${noteObject.content}" added`, 
+      type: 'success'})
+
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   const deleteNote = (id) => {
@@ -62,11 +72,6 @@ const App = () => {
       })
   }
 
-
-  const padding = {
-    padding: 5
-  }
-
   const match = useMatch('/notes/:id')
 
   const note = match
@@ -74,12 +79,10 @@ const App = () => {
     : null
 
   return (
-    <div>
-      <div>
-        <Link style={padding} to="/">home</Link>
-        <Link style={padding} to="/notes">notes</Link>
-        <Link style={padding} to="/create">new note</Link>
-      </div>
+    <Container>
+      <Navigation />
+
+      <Notification notification={notification} />
 
       <Routes>
         <Route path="/notes/:id" element={
@@ -99,7 +102,7 @@ const App = () => {
       </Routes>
 
       <Footer />
-    </div>
+    </Container>
   )
 }
 
