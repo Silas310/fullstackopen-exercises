@@ -1,21 +1,33 @@
 const loginWith = async (page, username, password) => {
-  await page.getByRole('textbox', { name: 'username' }).fill(username)
-  await page.getByRole('textbox', { name: 'password' }).fill(password)
-  await page.getByRole('button', { name: 'login' }).click()
+  const loginLink = page.getByRole('link', { name: 'login' })
+  await loginLink.click()
+
+  const usernameInput = page.getByRole('textbox', { name: 'username' })
+  const passwordInput = page.getByRole('textbox', { name: 'password' })
+  const loginButton = page.getByRole('button', { name: 'login' })
+
+  await usernameInput.fill(username)
+  await passwordInput.fill(password)
+  await loginButton.click()
 }
 
 const createBlog = async (page, title, author, url) => {
-  await page.getByRole('button', { name: 'create new blog' }).click()
+  const newBlogLink = page.getByRole('link', { name: 'new blog' })
+  await newBlogLink.click()
 
-  await page.getByPlaceholder('title').fill(title)
-  await page.getByPlaceholder('author').fill(author)
-  await page.getByPlaceholder('url').fill(url)
+  const createNewBlogButton = page
+  .getByRole('button', { name: 'create new blog' })
+  await createNewBlogButton.click()
 
-  await page.getByRole('button', { name: 'create' }).click()
+  const titleInput = page.getByPlaceholder('Title')
+  const authorInput = page.getByPlaceholder('Author')
+  const urlInput = page.getByPlaceholder('URL')
+  const createButton = page.getByRole('button', { name: 'create' })
+
+  await titleInput.fill(title)
+  await authorInput.fill(author)
+  await urlInput.fill(url)
+  await createButton.click()
 }
 
-
-export {
-  loginWith,
-  createBlog
-}
+export { loginWith, createBlog }

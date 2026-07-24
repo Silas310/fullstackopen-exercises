@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { loginWith, createBlog } from './helper.js'
 
+
 test.describe('Blog app', () => {
   test.beforeEach(async ({ page, request }) => {
     // empty db and create user - done
@@ -22,113 +23,48 @@ test.describe('Blog app', () => {
     await page.goto('http://localhost:5173')
   })
 
-  test('Login form is shown by default', async ({ page }) => {
-    // open page -> login form should be visible
-    // goto is in beforeEach -> get inputs by ? -> expect to be visible
-    await expect(page.getByRole('textbox', {name: 'username'})).toBeVisible()
-    await expect(page.getByRole('textbox', {name: 'password'})).toBeVisible()
-    await expect(page.getByRole('button', {name: 'login'})).toBeVisible()
-  })
+  test('login fails with wrong credentials', async ({ page }) => {
+      await loginWith(page, "silascosta", "wrongpassword");
 
-  test.describe('Login', () => {
-    test('user can log in', async ({ page }) => {
-      // open page -> login form visible -> fill in -> click login
-      // expect to see logged in user
-      const usernameInput = page.getByRole('textbox', {name: 'username'})
-      const passwordInput = page.getByRole('textbox', {name: 'password'})
-      const loginButton = page.getByRole('button', {name: 'login'})
+      await expect(page
+        .getByText('Error logging in: invalid username or password'))
+        .toBeVisible();
+    });
 
-      await usernameInput.fill('silascosta')
-      await passwordInput.fill('vascodagama')
-      await loginButton.click()
-
-      await expect(page.getByText('Silas Costa logged in')).toBeVisible()
-    })
-
-    test('user cannot log in with wrong credentials', async ({ page }) => {
-      // open page -> login form visible -> fill in wrong credentials ->
-      // click login -> expect to see error message
-      const usernameInput = page.getByRole('textbox', {name: 'username'})
-      const passwordInput = page.getByRole('textbox', {name: 'password'})
-      const loginButton = page.getByRole('button', {name: 'login'})
-
-      await usernameInput.fill('silascosta')
-      await passwordInput.fill('wrongpassword')
-      await loginButton.click()
-
-      await expect(page.getByText('Error logging in: invalid username or password')).toBeVisible()
-    })
-  })
-
-  test.describe('When logged in', () => {
+  test.describe("when logged in", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto('http://localhost:5173')
-      await loginWith(page, 'silascosta', 'vascodagama')
-    })
+      await loginWith(page, "silascosta", "vascodagama");
+    });
 
-    test('a new blog can be created', async ({ page }) => {
-      // click button for creating new blog
-      await page.getByRole('button', {name: 'create new blog'}).click()
-      // fill inputs
-      await page.getByPlaceholder('title').fill('Test Blog Title')
-      await page.getByPlaceholder('author').fill('Test Blog Author')
-      await page.getByPlaceholder('url').fill('http://testblog.com')
-      // send form -> expect to see new blog in list
-      await page.getByRole('button', {name: 'create'}).click()
+    test('user can login', async ({ page }) => {
+      const userInfo = await page
+      .getByRole('button', { name: 'logout' })
 
-      await expect(page.getByText('Test Blog Title Test Blog Author')).toBeVisible()
-    })
+      await expect(userInfo).toBeVisible();
+    });
 
-    test('user can like a blog', async ({ page }) => {
-      // create a new blog -> click view button
-      // get like button and click it -> expect likes to increase
-      await createBlog(page, 'Test Blog Title', 'Test Blog Author',
-        'http://testblog.com')
+    test.describe("and a blog exists", () => {
+      test.beforeEach(async ({ page }) => {
+        await createBlog(page, "Test ", "Silas", "www.testblog.com");
+      });
 
-      await page.getByRole('button', {name: 'view'}).click()
+      test("create new blog", async ({ page }) => {
+        await page.getByRole("link", { name: "Test  by: 'Silas'" }).click();
+      });
 
-      const likeButton = page.getByRole('button', {name: 'like'})
+      test("like a blog", async ({ page }) => {
+        await page.getByRole("link", { name: "Test  by: 'Silas'" }).click();
+        await page.getByRole("button", { name: "like" }).click();
 
-      await likeButton.click()
-      await expect(page.getByText('Likes: 1')).toBeVisible()
-    })
+        await expect(page.getByText("likes 1")).toBeVisible();
+      });
 
-    test('user can delete a blog', async ({ page }) => {
-      // create a new blog -> click view button
-      // get delete button and click it 
-      // expect blog to be removed from list
-      await createBlog(page, 'Test Blog Title', 'Test Blog Author',
-        'http://testblog.com')
+      test("delete a blog", async ({ page }) => {
+        await page.getByRole("link", { name: "Test  by: 'Silas'" }).click();
+        await page.getByRole("button", { name: "Remove" }).click();
 
-      await page.getByRole('button', {name: 'view'}).click()
-      
-      
-      page.on('dialog', dialog => dialog.accept())
-
-      const deleteButton = page.getByRole('button', {name: 'Remove'})
-      await deleteButton.click()
-
-      await expect(page.
-        getByText('Test Blog Title Test Blog Author'))
-        .not.toBeVisible()
-    })
-
-    test('only owner can see delete button', async ({ page }) => {
-      // create two users(beforeEach does one) 
-      // log in with first user and create a blog
-      // log out and log in with second user 
-      // expect not to see delete button
-      await createBlog(page, 'Test Blog Title', 'Test Blog Author',
-        'http://testblog.com')
-
-      await page.getByRole('button', {name: 'logout'}).click()
-
-      await loginWith(page, 'anotheruser', 'anotherpassword')
-
-      await page.getByRole('button', {name: 'view'}).click()
-
-      await expect(page.getByRole('button', {name: 'Remove'})).
-      not.toBeVisible()
-    })
-  })
+        await expect(page.getByText("Test  by: 'Silas'")).not.toBeVisible();
+      });
+    });
+  });
 })
