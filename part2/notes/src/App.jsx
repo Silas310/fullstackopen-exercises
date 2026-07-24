@@ -13,10 +13,26 @@ import Home from './components/Home'
 import Footer from './components/Footer'
 import NoteForm from './components/AddNoteForm'
 import Note from './components/Note'
+import styled from 'styled-components'
 
 const App = () => {
   const [notes, setNotes] = useState([])
   const [notification, setNotification] = useState(null)
+  const Page = styled.div`
+  padding: 1em;
+  background: papayawhip;
+`
+
+const Navigation = styled.div`
+  background: BurlyWood;
+  padding: 1em;
+`
+
+const Footer = styled.div`
+  background: Chocolate;
+  padding: 1em;
+  margin-top: 1em;
+`
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
@@ -74,15 +90,21 @@ const App = () => {
 
   const match = useMatch('/notes/:id')
 
+  const padding = {
+    padding: 5
+  }
+
   const note = match
     ? notes.find(note => note.id === match.params.id)
     : null
 
   return (
-    <Container>
-      <Navigation />
-
-      <Notification notification={notification} />
+     <Page>
+      <Navigation>
+        <Link style={padding} to="/">home</Link>
+        <Link style={padding} to="/notes">notes</Link>
+        <Link style={padding} to="/create">new note</Link>
+      </Navigation>
 
       <Routes>
         <Route path="/notes/:id" element={
@@ -100,9 +122,10 @@ const App = () => {
         } />
         <Route path="/" element={<Home />} />
       </Routes>
-
-      <Footer />
-    </Container>
+      <Footer>
+         Note app, Department of Computer Science, University of Helsinki 2026
+      </Footer>
+    </Page>
   )
 }
 
